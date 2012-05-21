@@ -19,6 +19,7 @@ namespace Lettuce
         public Debugger(ref DCPU CPU)
         {
             InitializeComponent();
+            this.KeyPreview = true;
             this.CPU = CPU;
             foreach (Device d in CPU.ConnectedDevices)
                 listBoxConnectedDevices.Items.Add(d.FriendlyName);
@@ -88,6 +89,7 @@ namespace Lettuce
             checkBoxInterruptQueue.Enabled = false;
             buttonStepInto.Enabled = false;
             buttonStepOver.Enabled = false;
+            stopToolStripMenuItem.Text = "Start";
         }
 
         private void EnableAll()
@@ -108,6 +110,7 @@ namespace Lettuce
             checkBoxInterruptQueue.Enabled = true;
             buttonStepInto.Enabled = true;
             buttonStepOver.Enabled = true;
+            stopToolStripMenuItem.Text = "Stop";
         }
 
         private void listBoxConnectedDevices_SelectedIndexChanged(object sender, EventArgs e)
@@ -122,7 +125,7 @@ namespace Lettuce
 
         private void checkBoxRunning_CheckedChanged(object sender, EventArgs e)
         {
-            CPU.IsRunning = (sender as CheckBox).Checked;
+            CPU.IsRunning = !CPU.IsRunning;
             ResetLayout();
         }
 
@@ -240,6 +243,14 @@ namespace Lettuce
         {
             CPU.Execute(-1);
             ResetLayout();
+        }
+
+        private void Debugger_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.F6) // TODO: Keyboard customization
+                buttonStepInto_Click(sender, e);
+            if (e.KeyCode == Keys.F7)
+                buttonStepOver_Click(sender, e);
         }
     }
 }
