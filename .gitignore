@@ -1,0 +1,7 @@
+bin/
+debug/
+TestResults/
+*.user
+*.suo
+*.vsmdi
+*.testsettings
