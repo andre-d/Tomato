@@ -6,6 +6,8 @@ using Tomato.Hardware;
 using Tomato;
 using System.IO;
 using System.Threading;
+using System.Reflection;
+using System.Globalization;
 
 namespace Lettuce
 {
@@ -26,6 +28,17 @@ namespace Lettuce
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
+            // Enumerate loaded devices from plugins and Tomato
+            List<Device> PossibleDevices = new List<Device>();
+            foreach (Assembly asm in AppDomain.CurrentDomain.GetAssemblies())
+            {
+                var types = asm.GetTypes().Where(t => typeof(Device).IsAssignableFrom(t) && t.IsAbstract == false);
+                foreach (var type in types)
+                {
+                    PossibleDevices.Add((Device)Activator.CreateInstance(type));
+                }
+            }
+
             CPU = new DCPU();
             string binFile = null;
             bool littleEndian = false;
@@ -41,6 +54,16 @@ namespace Lettuce
                         case "-w":
                         case "--wait":
                             CPU.IsRunning = false;
+                            break;
+                        case "-c":
+                        case "--connect":
+                            string deviceID = args[++i];
+                            uint id = uint.Parse(deviceID, NumberStyles.HexNumber);
+                            foreach (Device d in PossibleDevices)
+                            {
+                                if (d.DeviceID == id)
+                                    devices.Add((Device)Activator.CreateInstance(d.GetType()));
+                            }
                             break;
                     }
                 }
@@ -69,7 +92,7 @@ namespace Lettuce
                 HardwareConfiguration hwc = new HardwareConfiguration();
                 hwc.ShowDialog();
                 foreach (var device in hwc.SelectedDevices)
-                    CPU.ConnectDevice(device);
+                    devices.Add(device);
             }
             if (!string.IsNullOrEmpty(binFile))
             {
@@ -91,6 +114,8 @@ namespace Lettuce
             }
             else
                 CPU.IsRunning = false;
+            foreach (var device in devices)
+                CPU.ConnectDevice(device);
 
             debugger = new Debugger(ref CPU);
             foreach (Device d in CPU.ConnectedDevices)
