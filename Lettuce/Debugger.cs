@@ -15,6 +15,7 @@ namespace Lettuce
     public partial class Debugger : Form
     {
         public DCPU CPU { get; set; }
+        private bool MayUpdateLayout = true;
 
         public Debugger(ref DCPU CPU)
         {
@@ -49,6 +50,9 @@ namespace Lettuce
             }
             else
             {
+                if (!MayUpdateLayout)
+                    return;
+                MayUpdateLayout = false;
                 textBoxRegisterA.Text = GetHexString(CPU.A, 4);
                 textBoxRegisterB.Text = GetHexString(CPU.B, 4);
                 textBoxRegisterC.Text = GetHexString(CPU.C, 4);
@@ -68,6 +72,7 @@ namespace Lettuce
                     DisableAll();
                 else
                     EnableAll();
+                MayUpdateLayout = true;
             }
         }
 
@@ -125,7 +130,8 @@ namespace Lettuce
 
         private void checkBoxRunning_CheckedChanged(object sender, EventArgs e)
         {
-            CPU.IsRunning = !CPU.IsRunning;
+            if (MayUpdateLayout)
+                CPU.IsRunning = !CPU.IsRunning;
             ResetLayout();
         }
 
