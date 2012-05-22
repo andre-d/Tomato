@@ -26,6 +26,16 @@ namespace Tomato
         public bool InterruptQueueEnabled, IsOnFire;
         public ushort[] Memory;
         public ushort PC, SP, EX, IA, A, B, C, X, Y, Z, I, J;
+        public ushort[] Registers
+        {
+            get
+            {
+                return new ushort[]
+                {
+                    A, B, C, X, Y, Z, I, J, PC, SP, EX, IA
+                };
+            }
+        }
         public int ClockSpeed = 100000;
         public bool IsRunning;
         /// <summary>
@@ -114,7 +124,8 @@ namespace Tomato
                                 break;
                             case 0x12: // HWI a
                                 cycles -= 3;
-                                cycles -= ConnectedDevices[opA].HandleInterrupt();
+                                if (opA < ConnectedDevices.Count)
+                                    cycles -= ConnectedDevices[opA].HandleInterrupt();
                                 break;
                         }
                         break;
@@ -506,5 +517,13 @@ namespace Tomato
         }
 
         #endregion
+
+        public void Reset()
+        {
+            A = B = C = X = Y = Z = I = J = PC = EX = IA = SP = 0;
+
+            foreach (var device in ConnectedDevices)
+                device.Reset();
+        }
     }
 }

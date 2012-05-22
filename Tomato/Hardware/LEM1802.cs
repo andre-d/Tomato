@@ -27,9 +27,10 @@ namespace Tomato.Hardware
                     DefaultFont[i] = value;
                 }
             }
-            Timer timer = new Timer(ToggleBlinker, null, BlinkRate, BlinkRate);
+            timer = new Timer(ToggleBlinker, null, BlinkRate, BlinkRate);
         }
 
+        Timer timer;
         private void ToggleBlinker(object o)
         {
             BlinkOn = !BlinkOn;
@@ -103,11 +104,10 @@ namespace Tomato.Hardware
                         Color background = GetPaletteColor((byte)((value & 0xF000) >> 12));
                         for (int i = 0; i < sizeof(uint) * 8; i++)
                         {
-                            if ((fontValue & 1) == 1 &&
-                                !(((value & 0x80)) == 0x80 && BlinkOn))
-                                screen.SetPixel(i / 8 + (x * CharWidth), i % 8 + (y * CharHeight), PixelData.FromColor(foreground));
-                            else
+                            if ((fontValue & 1) == 0 || (((value & 0x80) == 0x80) && !BlinkOn))
                                 screen.SetPixel(i / 8 + (x * CharWidth), i % 8 + (y * CharHeight), PixelData.FromColor(background));
+                            else
+                                screen.SetPixel(i / 8 + (x * CharWidth), i % 8 + (y * CharHeight), PixelData.FromColor(foreground));
                             fontValue >>= 1;
                         }
                         address++;
@@ -172,6 +172,12 @@ namespace Tomato.Hardware
                 ((color & 0xF00) >> 8) * 16
                 );
         }
+
+        public override void Reset()
+        {
+            ScreenMap = FontMap = PaletteMap = 0;
+            BorderColorValue = 0xF;
+        } 
 
         #region Default Values
 

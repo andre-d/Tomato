@@ -28,10 +28,11 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
+            Tomato.DCPU dcpu1 = new Tomato.DCPU();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.listBox2 = new System.Windows.Forms.ListBox();
             this.label2 = new System.Windows.Forms.Label();
-            this.listBox1 = new System.Windows.Forms.ListBox();
             this.label1 = new System.Windows.Forms.Label();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.checkBoxOnFire = new System.Windows.Forms.CheckBox();
@@ -79,6 +80,10 @@
             this.debugToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.stepIntoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.stepOverToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.memoryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.gotoAddressToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.rawMemoryDisplay = new Lettuce.MemoryDisplay();
+            this.resetToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -87,13 +92,13 @@
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.rawMemoryDisplay);
             this.groupBox1.Controls.Add(this.listBox2);
             this.groupBox1.Controls.Add(this.label2);
-            this.groupBox1.Controls.Add(this.listBox1);
             this.groupBox1.Controls.Add(this.label1);
             this.groupBox1.Location = new System.Drawing.Point(12, 27);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(412, 563);
+            this.groupBox1.Size = new System.Drawing.Size(470, 563);
             this.groupBox1.TabIndex = 0;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Memory";
@@ -103,7 +108,7 @@
             this.listBox2.FormattingEnabled = true;
             this.listBox2.Location = new System.Drawing.Point(9, 289);
             this.listBox2.Name = "listBox2";
-            this.listBox2.Size = new System.Drawing.Size(397, 264);
+            this.listBox2.Size = new System.Drawing.Size(452, 264);
             this.listBox2.TabIndex = 3;
             // 
             // label2
@@ -114,14 +119,6 @@
             this.label2.Size = new System.Drawing.Size(65, 13);
             this.label2.TabIndex = 2;
             this.label2.Text = "Disassembly";
-            // 
-            // listBox1
-            // 
-            this.listBox1.FormattingEnabled = true;
-            this.listBox1.Location = new System.Drawing.Point(9, 32);
-            this.listBox1.Name = "listBox1";
-            this.listBox1.Size = new System.Drawing.Size(397, 238);
-            this.listBox1.TabIndex = 1;
             // 
             // label1
             // 
@@ -165,7 +162,7 @@
             this.groupBox2.Controls.Add(this.label4);
             this.groupBox2.Controls.Add(this.label3);
             this.groupBox2.Controls.Add(this.checkBoxRunning);
-            this.groupBox2.Location = new System.Drawing.Point(430, 27);
+            this.groupBox2.Location = new System.Drawing.Point(488, 27);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Size = new System.Drawing.Size(167, 278);
             this.groupBox2.TabIndex = 1;
@@ -224,6 +221,7 @@
             // textBoxRegisterPC
             // 
             this.textBoxRegisterPC.Location = new System.Drawing.Point(24, 144);
+            this.textBoxRegisterPC.MaxLength = 4;
             this.textBoxRegisterPC.Name = "textBoxRegisterPC";
             this.textBoxRegisterPC.Size = new System.Drawing.Size(57, 20);
             this.textBoxRegisterPC.TabIndex = 19;
@@ -234,6 +232,7 @@
             // textBoxRegisterIA
             // 
             this.textBoxRegisterIA.Location = new System.Drawing.Point(104, 167);
+            this.textBoxRegisterIA.MaxLength = 4;
             this.textBoxRegisterIA.Name = "textBoxRegisterIA";
             this.textBoxRegisterIA.Size = new System.Drawing.Size(57, 20);
             this.textBoxRegisterIA.TabIndex = 25;
@@ -244,6 +243,7 @@
             // textBoxRegisterEX
             // 
             this.textBoxRegisterEX.Location = new System.Drawing.Point(104, 144);
+            this.textBoxRegisterEX.MaxLength = 4;
             this.textBoxRegisterEX.Name = "textBoxRegisterEX";
             this.textBoxRegisterEX.Size = new System.Drawing.Size(57, 20);
             this.textBoxRegisterEX.TabIndex = 23;
@@ -254,6 +254,7 @@
             // textBoxRegisterSP
             // 
             this.textBoxRegisterSP.Location = new System.Drawing.Point(24, 167);
+            this.textBoxRegisterSP.MaxLength = 4;
             this.textBoxRegisterSP.Name = "textBoxRegisterSP";
             this.textBoxRegisterSP.Size = new System.Drawing.Size(57, 20);
             this.textBoxRegisterSP.TabIndex = 21;
@@ -296,6 +297,7 @@
             // textBoxRegisterJ
             // 
             this.textBoxRegisterJ.Location = new System.Drawing.Point(104, 121);
+            this.textBoxRegisterJ.MaxLength = 4;
             this.textBoxRegisterJ.Name = "textBoxRegisterJ";
             this.textBoxRegisterJ.Size = new System.Drawing.Size(57, 20);
             this.textBoxRegisterJ.TabIndex = 17;
@@ -314,6 +316,7 @@
             // textBoxRegisterI
             // 
             this.textBoxRegisterI.Location = new System.Drawing.Point(24, 121);
+            this.textBoxRegisterI.MaxLength = 4;
             this.textBoxRegisterI.Name = "textBoxRegisterI";
             this.textBoxRegisterI.Size = new System.Drawing.Size(57, 20);
             this.textBoxRegisterI.TabIndex = 15;
@@ -332,6 +335,7 @@
             // textBoxRegisterZ
             // 
             this.textBoxRegisterZ.Location = new System.Drawing.Point(104, 98);
+            this.textBoxRegisterZ.MaxLength = 4;
             this.textBoxRegisterZ.Name = "textBoxRegisterZ";
             this.textBoxRegisterZ.Size = new System.Drawing.Size(57, 20);
             this.textBoxRegisterZ.TabIndex = 13;
@@ -350,6 +354,7 @@
             // textBoxRegisterC
             // 
             this.textBoxRegisterC.Location = new System.Drawing.Point(24, 98);
+            this.textBoxRegisterC.MaxLength = 4;
             this.textBoxRegisterC.Name = "textBoxRegisterC";
             this.textBoxRegisterC.Size = new System.Drawing.Size(57, 20);
             this.textBoxRegisterC.TabIndex = 11;
@@ -368,6 +373,7 @@
             // textBoxRegisterY
             // 
             this.textBoxRegisterY.Location = new System.Drawing.Point(104, 75);
+            this.textBoxRegisterY.MaxLength = 4;
             this.textBoxRegisterY.Name = "textBoxRegisterY";
             this.textBoxRegisterY.Size = new System.Drawing.Size(57, 20);
             this.textBoxRegisterY.TabIndex = 9;
@@ -386,6 +392,7 @@
             // textBoxRegisterB
             // 
             this.textBoxRegisterB.Location = new System.Drawing.Point(24, 75);
+            this.textBoxRegisterB.MaxLength = 4;
             this.textBoxRegisterB.Name = "textBoxRegisterB";
             this.textBoxRegisterB.Size = new System.Drawing.Size(57, 20);
             this.textBoxRegisterB.TabIndex = 7;
@@ -404,6 +411,7 @@
             // textBoxRegisterX
             // 
             this.textBoxRegisterX.Location = new System.Drawing.Point(104, 52);
+            this.textBoxRegisterX.MaxLength = 4;
             this.textBoxRegisterX.Name = "textBoxRegisterX";
             this.textBoxRegisterX.Size = new System.Drawing.Size(57, 20);
             this.textBoxRegisterX.TabIndex = 5;
@@ -422,6 +430,7 @@
             // textBoxRegisterA
             // 
             this.textBoxRegisterA.Location = new System.Drawing.Point(24, 52);
+            this.textBoxRegisterA.MaxLength = 4;
             this.textBoxRegisterA.Name = "textBoxRegisterA";
             this.textBoxRegisterA.Size = new System.Drawing.Size(57, 20);
             this.textBoxRegisterA.TabIndex = 3;
@@ -466,7 +475,7 @@
             this.groupBox3.Controls.Add(this.labelHardwareID);
             this.groupBox3.Controls.Add(this.listBoxConnectedDevices);
             this.groupBox3.Controls.Add(this.label17);
-            this.groupBox3.Location = new System.Drawing.Point(430, 311);
+            this.groupBox3.Location = new System.Drawing.Point(488, 311);
             this.groupBox3.Name = "groupBox3";
             this.groupBox3.Size = new System.Drawing.Size(167, 279);
             this.groupBox3.TabIndex = 2;
@@ -531,10 +540,11 @@
             // 
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.emulationToolStripMenuItem,
-            this.debugToolStripMenuItem});
+            this.debugToolStripMenuItem,
+            this.memoryToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(609, 24);
+            this.menuStrip1.Size = new System.Drawing.Size(664, 24);
             this.menuStrip1.TabIndex = 3;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -551,15 +561,16 @@
             // 
             this.stopToolStripMenuItem.Name = "stopToolStripMenuItem";
             this.stopToolStripMenuItem.ShortcutKeyDisplayString = "F5";
-            this.stopToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.stopToolStripMenuItem.Size = new System.Drawing.Size(117, 22);
             this.stopToolStripMenuItem.Text = "Stop";
             this.stopToolStripMenuItem.Click += new System.EventHandler(this.checkBoxRunning_CheckedChanged);
             // 
             // resetToolStripMenuItem
             // 
             this.resetToolStripMenuItem.Name = "resetToolStripMenuItem";
-            this.resetToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.resetToolStripMenuItem.Size = new System.Drawing.Size(117, 22);
             this.resetToolStripMenuItem.Text = "Reset";
+            this.resetToolStripMenuItem.Click += new System.EventHandler(this.resetToolStripMenuItem_Click);
             // 
             // debugToolStripMenuItem
             // 
@@ -574,7 +585,7 @@
             // 
             this.stepIntoToolStripMenuItem.Name = "stepIntoToolStripMenuItem";
             this.stepIntoToolStripMenuItem.ShortcutKeyDisplayString = "F6";
-            this.stepIntoToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.stepIntoToolStripMenuItem.Size = new System.Drawing.Size(144, 22);
             this.stepIntoToolStripMenuItem.Text = "Step Into";
             this.stepIntoToolStripMenuItem.Click += new System.EventHandler(this.buttonStepInto_Click);
             // 
@@ -582,15 +593,50 @@
             // 
             this.stepOverToolStripMenuItem.Name = "stepOverToolStripMenuItem";
             this.stepOverToolStripMenuItem.ShortcutKeyDisplayString = "F7";
-            this.stepOverToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.stepOverToolStripMenuItem.Size = new System.Drawing.Size(144, 22);
             this.stepOverToolStripMenuItem.Text = "Step Over";
             this.stepOverToolStripMenuItem.Click += new System.EventHandler(this.buttonStepOver_Click);
+            // 
+            // memoryToolStripMenuItem
+            // 
+            this.memoryToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.gotoAddressToolStripMenuItem,
+            this.resetToolStripMenuItem1});
+            this.memoryToolStripMenuItem.Name = "memoryToolStripMenuItem";
+            this.memoryToolStripMenuItem.Size = new System.Drawing.Size(64, 20);
+            this.memoryToolStripMenuItem.Text = "Memory";
+            // 
+            // gotoAddressToolStripMenuItem
+            // 
+            this.gotoAddressToolStripMenuItem.Name = "gotoAddressToolStripMenuItem";
+            this.gotoAddressToolStripMenuItem.ShortcutKeyDisplayString = "Ctrl+G";
+            this.gotoAddressToolStripMenuItem.Size = new System.Drawing.Size(187, 22);
+            this.gotoAddressToolStripMenuItem.Text = "Goto Address";
+            this.gotoAddressToolStripMenuItem.Click += new System.EventHandler(this.gotoAddressToolStripMenuItem_Click);
+            // 
+            // rawMemoryDisplay
+            // 
+            this.rawMemoryDisplay.CPU = dcpu1;
+            this.rawMemoryDisplay.Font = new System.Drawing.Font("Courier New", 12F);
+            this.rawMemoryDisplay.Location = new System.Drawing.Point(6, 32);
+            this.rawMemoryDisplay.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
+            this.rawMemoryDisplay.Name = "rawMemoryDisplay";
+            this.rawMemoryDisplay.SelectedAddress = ((ushort)(0));
+            this.rawMemoryDisplay.Size = new System.Drawing.Size(455, 238);
+            this.rawMemoryDisplay.TabIndex = 4;
+            // 
+            // resetToolStripMenuItem1
+            // 
+            this.resetToolStripMenuItem1.Name = "resetToolStripMenuItem1";
+            this.resetToolStripMenuItem1.Size = new System.Drawing.Size(187, 22);
+            this.resetToolStripMenuItem1.Text = "Reset";
+            this.resetToolStripMenuItem1.Click += new System.EventHandler(this.resetToolStripMenuItem1_Click);
             // 
             // Debugger
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(609, 602);
+            this.ClientSize = new System.Drawing.Size(664, 602);
             this.Controls.Add(this.groupBox3);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);
@@ -617,7 +663,6 @@
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.ListBox listBox2;
         private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.ListBox listBox1;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.GroupBox groupBox2;
         private System.Windows.Forms.Label label16;
@@ -665,6 +710,10 @@
         private System.Windows.Forms.ToolStripMenuItem debugToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem stepIntoToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem stepOverToolStripMenuItem;
+        private MemoryDisplay rawMemoryDisplay;
+        private System.Windows.Forms.ToolStripMenuItem memoryToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem gotoAddressToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem resetToolStripMenuItem1;
 
     }
 }

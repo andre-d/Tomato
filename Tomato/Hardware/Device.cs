@@ -18,5 +18,6 @@ namespace Tomato.Hardware
         /// </summary>
         /// <returns></returns>
         public abstract int HandleInterrupt();
+        public abstract void Reset();
     }
 }

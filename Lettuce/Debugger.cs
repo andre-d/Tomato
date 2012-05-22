@@ -22,6 +22,7 @@ namespace Lettuce
             InitializeComponent();
             this.KeyPreview = true;
             this.CPU = CPU;
+            this.rawMemoryDisplay.CPU = this.CPU;
             foreach (Device d in CPU.ConnectedDevices)
                 listBoxConnectedDevices.Items.Add(d.FriendlyName);
         }
@@ -68,6 +69,7 @@ namespace Lettuce
                 checkBoxRunning.Checked = CPU.IsRunning;
                 checkBoxInterruptQueue.Checked = CPU.InterruptQueueEnabled;
                 checkBoxOnFire.Checked = CPU.IsOnFire;
+                rawMemoryDisplay.Invalidate();
                 if (CPU.IsRunning)
                     DisableAll();
                 else
@@ -94,7 +96,8 @@ namespace Lettuce
             checkBoxInterruptQueue.Enabled = false;
             buttonStepInto.Enabled = false;
             buttonStepOver.Enabled = false;
-            stopToolStripMenuItem.Text = "Start";
+            stopToolStripMenuItem.Text = "Stop";
+            rawMemoryDisplay.Enabled = false;
         }
 
         private void EnableAll()
@@ -115,7 +118,8 @@ namespace Lettuce
             checkBoxInterruptQueue.Enabled = true;
             buttonStepInto.Enabled = true;
             buttonStepOver.Enabled = true;
-            stopToolStripMenuItem.Text = "Stop";
+            stopToolStripMenuItem.Text = "Start";
+            rawMemoryDisplay.Enabled = true;
         }
 
         private void listBoxConnectedDevices_SelectedIndexChanged(object sender, EventArgs e)
@@ -137,30 +141,42 @@ namespace Lettuce
 
         private void textBoxRegisterX_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.Control || e.Alt || ((sender as TextBox).Text.Length == 4 &&
-                !(e.KeyCode == Keys.Back || e.KeyCode == Keys.Delete || textBoxRegisterA.SelectionLength != 0)))
+            if (e.Control || e.Alt)
             {
                 e.SuppressKeyPress = true;
                 e.Handled = true;
                 return;
             }
-            if (e.KeyCode == Keys.D1   ||
-                e.KeyCode == Keys.D2   ||
-                e.KeyCode == Keys.D3   ||
-                e.KeyCode == Keys.D4   ||
-                e.KeyCode == Keys.D5   ||
-                e.KeyCode == Keys.D6   ||
-                e.KeyCode == Keys.D7   ||
-                e.KeyCode == Keys.D8   ||
-                e.KeyCode == Keys.D9   ||
-                e.KeyCode == Keys.A    ||
-                e.KeyCode == Keys.B    ||
-                e.KeyCode == Keys.C    ||
-                e.KeyCode == Keys.D    ||
-                e.KeyCode == Keys.E    ||
-                e.KeyCode == Keys.F    ||
+            if (e.KeyCode == Keys.D1 ||
+                e.KeyCode == Keys.D2 ||
+                e.KeyCode == Keys.D3 ||
+                e.KeyCode == Keys.D4 ||
+                e.KeyCode == Keys.D5 ||
+                e.KeyCode == Keys.D6 ||
+                e.KeyCode == Keys.D7 ||
+                e.KeyCode == Keys.D8 ||
+                e.KeyCode == Keys.D9 ||
+                e.KeyCode == Keys.D0 ||
+                e.KeyCode == Keys.NumPad1 ||
+                e.KeyCode == Keys.NumPad2 ||
+                e.KeyCode == Keys.NumPad3 ||
+                e.KeyCode == Keys.NumPad4 ||
+                e.KeyCode == Keys.NumPad5 ||
+                e.KeyCode == Keys.NumPad6 ||
+                e.KeyCode == Keys.NumPad7 ||
+                e.KeyCode == Keys.NumPad8 ||
+                e.KeyCode == Keys.NumPad9 ||
+                e.KeyCode == Keys.NumPad0 ||
+                e.KeyCode == Keys.A ||
+                e.KeyCode == Keys.B ||
+                e.KeyCode == Keys.C ||
+                e.KeyCode == Keys.D ||
+                e.KeyCode == Keys.E ||
+                e.KeyCode == Keys.F ||
                 e.KeyCode == Keys.Back ||
-                e.KeyCode == Keys.Delete)
+                e.KeyCode == Keys.Delete ||
+                e.KeyCode == Keys.Left ||
+                e.KeyCode == Keys.Right)
             {
                 return;
             }
@@ -257,6 +273,28 @@ namespace Lettuce
                 buttonStepInto_Click(sender, e);
             if (e.KeyCode == Keys.F7)
                 buttonStepOver_Click(sender, e);
+            if (e.Control)
+            {
+                if (e.KeyCode == Keys.G)
+                    gotoAddressToolStripMenuItem_Click(sender, e);
+            }
+        }
+
+        private void resetToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            CPU.Reset();
+            ResetLayout();
+        }
+
+        private void gotoAddressToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            rawMemoryDisplay.gotoAddressToolStripMenuItem_Click(sender, e);
+        }
+
+        private void resetToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            CPU.Memory = new ushort[0x10000];
+            ResetLayout();
         }
     }
 }

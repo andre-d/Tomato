@@ -58,11 +58,22 @@ namespace Lettuce
                         case "-c":
                         case "--connect":
                             string deviceID = args[++i];
-                            uint id = uint.Parse(deviceID, NumberStyles.HexNumber);
-                            foreach (Device d in PossibleDevices)
+                            uint id;
+                            if (uint.TryParse(deviceID, NumberStyles.HexNumber, null, out id))
                             {
-                                if (d.DeviceID == id)
-                                    devices.Add((Device)Activator.CreateInstance(d.GetType()));
+                                foreach (Device d in PossibleDevices)
+                                {
+                                    if (d.DeviceID == id)
+                                        devices.Add((Device)Activator.CreateInstance(d.GetType()));
+                                }
+                            }
+                            else
+                            {
+                                foreach (Device d in PossibleDevices)
+                                {
+                                    if (d.GetType().Name.ToLower() == deviceID.ToLower())
+                                        devices.Add((Device)Activator.CreateInstance(d.GetType()));
+                                }
                             }
                             break;
                     }
