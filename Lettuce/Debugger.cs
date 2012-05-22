@@ -188,72 +188,84 @@ namespace Lettuce
         {
             if (textBoxRegisterA.Text.Length != 0)
                 CPU.A = ushort.Parse(textBoxRegisterA.Text, NumberStyles.HexNumber);
+            rawMemoryDisplay.Invalidate();
         }
 
         private void textBoxRegisterB_TextChanged(object sender, EventArgs e)
         {
             if ((sender as TextBox).Text.Length != 0)
                 CPU.B = ushort.Parse((sender as TextBox).Text, NumberStyles.HexNumber);
+            rawMemoryDisplay.Invalidate();
         }
 
         private void textBoxRegisterC_TextChanged(object sender, EventArgs e)
         {
             if ((sender as TextBox).Text.Length != 0)
                 CPU.C = ushort.Parse((sender as TextBox).Text, NumberStyles.HexNumber);
+            rawMemoryDisplay.Invalidate();
         }
 
         private void textBoxRegisterX_TextChanged(object sender, EventArgs e)
         {
             if ((sender as TextBox).Text.Length != 0)
                 CPU.X = ushort.Parse((sender as TextBox).Text, NumberStyles.HexNumber);
+            rawMemoryDisplay.Invalidate();
         }
 
         private void textBoxRegisterY_TextChanged(object sender, EventArgs e)
         {
             if ((sender as TextBox).Text.Length != 0)
                 CPU.Y = ushort.Parse((sender as TextBox).Text, NumberStyles.HexNumber);
+            rawMemoryDisplay.Invalidate();
         }
 
         private void textBoxRegisterZ_TextChanged(object sender, EventArgs e)
         {
             if ((sender as TextBox).Text.Length != 0)
                 CPU.Z = ushort.Parse((sender as TextBox).Text, NumberStyles.HexNumber);
+            rawMemoryDisplay.Invalidate();
         }
 
         private void textBoxRegisterI_TextChanged(object sender, EventArgs e)
         {
             if ((sender as TextBox).Text.Length != 0)
                 CPU.I = ushort.Parse((sender as TextBox).Text, NumberStyles.HexNumber);
+            rawMemoryDisplay.Invalidate();
         }
 
         private void textBoxRegisterJ_TextChanged(object sender, EventArgs e)
         {
             if ((sender as TextBox).Text.Length != 0)
                 CPU.J = ushort.Parse((sender as TextBox).Text, NumberStyles.HexNumber);
+            rawMemoryDisplay.Invalidate();
         }
 
         private void textBoxRegisterPC_TextChanged(object sender, EventArgs e)
         {
             if ((sender as TextBox).Text.Length != 0)
                 CPU.PC = ushort.Parse((sender as TextBox).Text, NumberStyles.HexNumber);
+            rawMemoryDisplay.Invalidate();
         }
 
         private void textBoxRegisterEX_TextChanged(object sender, EventArgs e)
         {
             if ((sender as TextBox).Text.Length != 0)
                 CPU.EX = ushort.Parse((sender as TextBox).Text, NumberStyles.HexNumber);
+            rawMemoryDisplay.Invalidate();
         }
 
         private void textBoxRegisterSP_TextChanged(object sender, EventArgs e)
         {
             if ((sender as TextBox).Text.Length != 0)
                 CPU.SP = ushort.Parse((sender as TextBox).Text, NumberStyles.HexNumber);
+            rawMemoryDisplay.Invalidate();
         }
 
         private void textBoxRegisterIA_TextChanged(object sender, EventArgs e)
         {
             if ((sender as TextBox).Text.Length != 0)
                 CPU.IA = ushort.Parse((sender as TextBox).Text, NumberStyles.HexNumber);
+            rawMemoryDisplay.Invalidate();
         }
 
         private void buttonStepOver_Click(object sender, EventArgs e)
@@ -273,6 +285,8 @@ namespace Lettuce
                 buttonStepInto_Click(sender, e);
             if (e.KeyCode == Keys.F7)
                 buttonStepOver_Click(sender, e);
+            if (e.KeyCode == Keys.F5)
+                checkBoxRunning.Checked = !checkBoxRunning.Checked;
             if (e.Control)
             {
                 if (e.KeyCode == Keys.G)
