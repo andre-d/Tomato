@@ -299,8 +299,10 @@ namespace Tomato
                 opcode = (byte)(instruction & 0x1F);
                 byte valueB = (byte)((instruction & 0x3E0) >> 5);
                 byte valueA = (byte)((instruction & 0xFC00) >> 10);
+                ushort SP_old = SP;
                 Get(valueA);
                 Get(valueB);
+                SP = SP_old;
             }
         }
 
