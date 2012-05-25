@@ -135,7 +135,7 @@ namespace Tomato
                     case 0x02: // ADD b, a
                         cycles--;
                         if (opB + opA > 0xFFFF)
-                            EX = 0xFFFF;
+                            EX = 0x0001;
                         Set(valueB, (ushort)(opB + opA));
                         break;
                     case 0x03: // SUB b, a
@@ -291,8 +291,8 @@ namespace Tomato
 
         private void SkipIfChain()
         {
-            byte opcode = 0x11;
-            while (opcode > 0x10)
+            byte opcode;
+            do
             {
                 cycles--;
                 ushort instruction = Memory[PC++];
@@ -303,7 +303,7 @@ namespace Tomato
                 Get(valueA);
                 Get(valueB);
                 SP = SP_old;
-            }
+            } while (opcode >= 0x10 && opcode <= 0x17);
         }
 
         public void FireInterrupt(ushort Message)
@@ -394,35 +394,35 @@ namespace Tomato
                     break;
                 case 0x10:
                     cycles--;
-                    Memory[A + Memory[PC++]] = value;
+                    Memory[(ushort)(A + Memory[PC++])] = value;
                     break;
                 case 0x11:
                     cycles--;
-                    Memory[B + Memory[PC++]] = value;
+                    Memory[(ushort)(B + Memory[PC++])] = value;
                     break;
                 case 0x12:
                     cycles--;
-                    Memory[C + Memory[PC++]] = value;
+                    Memory[(ushort)(C + Memory[PC++])] = value;
                     break;
                 case 0x13:
                     cycles--;
-                    Memory[X + Memory[PC++]] = value;
+                    Memory[(ushort)(X + Memory[PC++])] = value;
                     break;
                 case 0x14:
                     cycles--;
-                    Memory[Y + Memory[PC++]] = value;
+                    Memory[(ushort)(Y + Memory[PC++])] = value;
                     break;
                 case 0x15:
                     cycles--;
-                    Memory[Z + Memory[PC++]] = value;
+                    Memory[(ushort)(Z + Memory[PC++])] = value;
                     break;
                 case 0x16:
                     cycles--;
-                    Memory[I + Memory[PC++]] = value;
+                    Memory[(ushort)(I + Memory[PC++])] = value;
                     break;
                 case 0x17:
                     cycles--;
-                    Memory[J + Memory[PC++]] = value;
+                    Memory[(ushort)(J + Memory[PC++])] = value;
                     break;
                 case 0x18:
                     Memory[--SP] = value;
@@ -432,7 +432,7 @@ namespace Tomato
                     break;
                 case 0x1A:
                     cycles--;
-                    Memory[SP + Memory[PC++]] = value;
+                    Memory[(ushort)(SP + Memory[PC++])] = value;
                     break;
                 case 0x1B:
                     SP = value;
@@ -512,10 +512,9 @@ namespace Tomato
                 case 0x1F:
                     cycles--;
                     return Memory[PC++];
+                default:
+                    return (ushort)(target - 0x21);
             }
-            if (target > 0x1F && target < 0x40)
-                return (ushort)(target - 0x21);
-            return 0x00;
         }
 
         #endregion

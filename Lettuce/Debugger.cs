@@ -310,5 +310,10 @@ namespace Lettuce
             CPU.Memory = new ushort[0x10000];
             ResetLayout();
         }
+
+        private void checkBoxOnFire_CheckedChanged(object sender, EventArgs e)
+        {
+            CPU.IsOnFire = checkBoxOnFire.Checked;
+        }
     }
 }

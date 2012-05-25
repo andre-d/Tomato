@@ -202,6 +202,7 @@
             this.checkBoxOnFire.TabIndex = 30;
             this.checkBoxOnFire.Text = "On Fire";
             this.checkBoxOnFire.UseVisualStyleBackColor = true;
+            this.checkBoxOnFire.CheckedChanged += new System.EventHandler(this.checkBoxOnFire_CheckedChanged);
             // 
             // label16
             // 
