@@ -14,6 +14,8 @@ Planned Things
 How to Use
 ----------
 
+If you wish to use any of this software on Linux or Mac, install Mono first.  It's usually called "mono-complete" on Linux.
+
 **Lettuce**
 
 Lettuce is probably what you want to use.  It looks like this:
