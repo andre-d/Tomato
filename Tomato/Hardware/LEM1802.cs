@@ -44,30 +44,13 @@ namespace Tomato.Hardware
         private bool BlinkOn = true;
 
         public ushort ScreenMap, FontMap, PaletteMap;
-        public ushort BorderColorValue = 0xF;
+        public ushort BorderColorValue = 0;
 
         public Color BorderColor
         {
             get
             {
-                if (PaletteMap != 0)
-                {
-                    ushort value = AttachedCPU.Memory[PaletteMap + BorderColorValue];
-                    return Color.FromArgb(
-                        (value & 0xF) * 16,
-                        ((value & 0xF0) >> 4) * 16,
-                        ((value & 0xF00) >> 8) * 16
-                        );
-                }
-                else
-                {
-                    ushort value = DefaultPalette[BorderColorValue];
-                    return Color.FromArgb(
-                        (value & 0xF) * 16,
-                        ((value & 0xF0) >> 4) * 16,
-                        ((value & 0xF00) >> 8) * 16
-                        );
-                }
+                return GetPaletteColor((byte)BorderColorValue);
             }
         }
 
@@ -93,15 +76,10 @@ namespace Tomato.Hardware
                             fontValue = (uint)((DefaultFont[(value & 0x7F) * 2] << 16) | DefaultFont[(value & 0x7F) * 2 + 1]);
                         else
                             fontValue = (uint)((AttachedCPU.Memory[FontMap + ((value & 0x7F) * 2)] << 16) | AttachedCPU.Memory[FontMap + ((value & 0x7F) * 2) + 1]);
-                        if (value == 0)
-                        {
-                            value = 0xF000;
-                            fontValue = 0;
-                        }
                         fontValue = BitConverter.ToUInt32(BitConverter.GetBytes(fontValue).Reverse().ToArray(), 0);
 
-                        Color foreground = GetPaletteColor((byte)((value & 0xF00) >> 8));
-                        Color background = GetPaletteColor((byte)((value & 0xF000) >> 12));
+                        Color background = GetPaletteColor((byte)((value & 0xF00) >> 8));
+                        Color foreground = GetPaletteColor((byte)((value & 0xF000) >> 12));
                         for (int i = 0; i < sizeof(uint) * 8; i++)
                         {
                             if ((fontValue & 1) == 0 || (((value & 0x80) == 0x80) && !BlinkOn))
@@ -165,11 +143,17 @@ namespace Tomato.Hardware
                 color = DefaultPalette[value & 0xF];
             else
                 color = AttachedCPU.Memory[PaletteMap + (value & 0xF)];
+
+            byte r, g, b;
+            b = (byte)(color & 0xF);
+            b |= (byte)(b << 4);
+            g = (byte)((color & 0xF0) >> 4);
+            g |= (byte)(g << 4);
+            r = (byte)((color & 0xF00) >> 8);
+            r |= (byte)(r << 4);
+
             return Color.FromArgb(
-                255,
-                (color & 0xF) * 16,
-                ((color & 0xF0) >> 4) * 16,
-                ((color & 0xF00) >> 8) * 16
+                255, r, g, b
                 );
         }
 
@@ -183,7 +167,8 @@ namespace Tomato.Hardware
 
         private static ushort[] DefaultPalette = 
         {
-            0xFFF,0xFF5,0xF5F,0xF55,0x5FF,0x5F5,0x55F,0x555,0xAAA,0xAA0,0xA0A,0xA00,0x0AA,0x0A0,0x00A,0x000
+            //0xFFF,0xFF5,0xF5F,0xF55,0x5FF,0x5F5,0x55F,0x555,0xAAA,0xA50,0xA0A,0xA00,0x0AA,0x0A0,0x00A,0x000
+            0x000,0x00A,0x0A0,0x0AA,0xA00,0xA0A,0xA50,0xAAA,0x555,0x55F,0x5F5,0x5FF,0xF55,0xF5F,0xFF5,0xFFF
         };
 
         private static ushort[] DefaultFont;

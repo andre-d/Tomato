@@ -8,6 +8,7 @@ using System.IO;
 using System.Threading;
 using System.Reflection;
 using System.Globalization;
+using System.Drawing;
 
 namespace Lettuce
 {
@@ -30,6 +31,7 @@ namespace Lettuce
 
             // Enumerate loaded devices from plugins and Tomato
             List<Device> PossibleDevices = new List<Device>();
+            GenericKeyboard kb = new GenericKeyboard();
             foreach (Assembly asm in AppDomain.CurrentDomain.GetAssemblies())
             {
                 var types = asm.GetTypes().Where(t => typeof(Device).IsAssignableFrom(t) && t.IsAbstract == false);
@@ -129,21 +131,32 @@ namespace Lettuce
                 CPU.ConnectDevice(device);
 
             debugger = new Debugger(ref CPU);
+            debugger.StartPosition = FormStartPosition.Manual;
+            debugger.Location = new Point(0, 0);
+            debugger.ResetLayout();
+            debugger.Show();
+            Point screenLocation = new Point();
+            screenLocation.Y = debugger.Location.Y + 4;
+            screenLocation.X = debugger.Location.X + debugger.Width + 5;
             foreach (Device d in CPU.ConnectedDevices)
             {
                 if (d is LEM1802)
                 {
-                    LEM1802Window window = new LEM1802Window(d as LEM1802);
+                    LEM1802Window window = new LEM1802Window(d as LEM1802, CPU, true);
+                    window.StartPosition = FormStartPosition.Manual;
+                    window.Location = screenLocation;
+                    screenLocation.Y += window.Height + 12;
                     window.Show();
+                    window.Invalidate();
+                    window.Update();
+                    window.Focus();
                 }
             }
-
-            debugger.ResetLayout();
-
+            debugger.Focus();
             LastTick = DateTime.Now;
             timer = new System.Threading.Timer(FetchExecute, null, 10, Timeout.Infinite);
             Application.Run(debugger);
-            timer = null;
+            timer.Dispose();
         }
 
         private static void FetchExecute(object o)
