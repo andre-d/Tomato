@@ -132,6 +132,12 @@ namespace Tomato.Hardware
                 case 0x03:
                     BorderColorValue = (ushort)(AttachedCPU.B & 0xF);
                     break;
+                case 0x04:
+                    Array.Copy(DefaultFont, 0, AttachedCPU.Memory, AttachedCPU.B, DefaultFont.Length);
+                    return 256;
+                case 0x05:
+                    Array.Copy(DefaultPalette, 0, AttachedCPU.Memory, AttachedCPU.B, DefaultPalette.Length);
+                    return 16;
             }
             return 0;
         }
