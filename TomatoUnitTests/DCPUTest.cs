@@ -166,23 +166,19 @@ SUB PC, 1"
             Assembler assembler = new Assembler();
             List<ListEntry> assemblyOutput = assembler.Assemble(
                 @"
-SET I, 0
-SET A, 0
-IFE I, 0xFFFF
-    SET A, 10
-ADD A, 1
-
-SET B, 10
-SET [B], 20
-SET C, 0
-IFE [B], 0
-    SET C, 10
+.longform
+SET X, 0x8000
+SET [0x8001], 10
+SET [0x8002], 20
+SET A, 10
+IFE [X+1],[X+2]
+    IFN [X+1], [X+2]
+        SET A, 20
 SUB PC, 1
 ");
             target.FlashMemory(GetOutput(assemblyOutput));
             target.Execute(100);
-            Assert.AreEqual(1, target.A);
-            Assert.AreEqual(0, target.C);
+            Assert.AreEqual(10, target.A);
         }
 
         [TestMethod]
