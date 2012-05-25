@@ -45,6 +45,7 @@
   <ItemGroup>
     <Compile Include="DCPU.cs" />
     <Compile Include="Hardware\Device.cs" />
+    <Compile Include="Hardware\GenericClock.cs" />
     <Compile Include="Hardware\GenericKeyboard.cs" />
     <Compile Include="Hardware\LEM1802.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
