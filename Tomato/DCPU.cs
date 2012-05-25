@@ -102,8 +102,8 @@ namespace Tomato
                                 IA = opA;
                                 break;
                             case 0x0B: // RFI a
-                                A = Memory[PC++];
-                                PC = Memory[PC++];
+                                A = Memory[SP++];
+                                PC = Memory[SP++];
                                 InterruptQueueEnabled = false;
                                 break;
                             case 0x10: // HWN a

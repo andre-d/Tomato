@@ -39,7 +39,16 @@ namespace Tomato.Hardware
             {
                 case 0:
                     Frequency = AttachedCPU.B;
-                    Clock = new Timer(Tick, null, (int)(1000 / (60d / Frequency)), (int)(1000 / (60d / Frequency)));
+                    if (Frequency != 0)
+                        Clock = new Timer(Tick, null, (int)(1000 / (60d / Frequency)), Timeout.Infinite);
+                    else
+                    {
+                        if (Clock != null)
+                        {
+                            Clock.Dispose();
+                            Clock = null;
+                        }
+                    }
                     break;
                 case 1:
                     AttachedCPU.C = ElapsedTicks;
@@ -56,9 +65,15 @@ namespace Tomato.Hardware
         {
             try
             {
+                if (!AttachedCPU.IsRunning)
+                {
+                    Clock = new Timer(Tick, null, (int)(1000 / (60d / Frequency)), Timeout.Infinite);
+                    return;
+                }
                 if (InterruptMessage != 0)
                     AttachedCPU.FireInterrupt(InterruptMessage);
                 ElapsedTicks++;
+                Clock = new Timer(Tick, null, (int)(1000 / (60d / Frequency)), Timeout.Infinite);
             }
             catch { }
         }
