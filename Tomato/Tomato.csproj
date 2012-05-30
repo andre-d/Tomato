@@ -43,6 +43,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BreakpointEventArgs.cs" />
     <Compile Include="DCPU.cs" />
     <Compile Include="Hardware\Device.cs" />
     <Compile Include="Hardware\GenericClock.cs" />

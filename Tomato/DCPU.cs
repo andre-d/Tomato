@@ -41,7 +41,7 @@ namespace Tomato
         /// <summary>
         /// Called when a breakpoint is hit, before it is executed.
         /// </summary>
-        public event EventHandler BreakpointHit;
+        public event EventHandler<BreakpointEventArgs> BreakpointHit;
 
         private static Random Random;
         private int cycles = 0;
@@ -58,8 +58,13 @@ namespace Tomato
             while (cycles > 0)
             {
                 if (BreakpointHit != null)
-                    if (Breakpoints.Contains((ushort)(PC + 1)))
-                        BreakpointHit(this, null);
+                    if (Breakpoints.Contains(PC))
+                    {
+                        BreakpointEventArgs bea = new BreakpointEventArgs();
+                        BreakpointHit(this, bea);
+                        if (!bea.ContinueExecution)
+                            return;
+                    }
                 if (IsOnFire)
                     Memory[Random.Next(0xFFFF)] = (ushort)Random.Next(0xFFFF);
                 if (!InterruptQueueEnabled && InterruptQueue.Count > 0)

@@ -17,12 +17,13 @@ namespace Lettuce
         public DCPU CPU { get; set; }
         private ushort wordsWide;
         private Point MouseLocation;
+        public bool AsStack { get; set; }
 
         public MemoryDisplay()
         {
+            AsStack = false;
             this.CPU = new DCPU();
             InitializeComponent();
-            this.Font = new Font(FontFamily.GenericMonospace, 8);
             this.MouseMove += new MouseEventHandler(MemoryDisplay_MouseMove);
         }
 
@@ -34,9 +35,12 @@ namespace Lettuce
         protected override void OnMouseWheel(MouseEventArgs e)
         {
             ((HandledMouseEventArgs)e).Handled = true;
-            if (e.Delta > 0)
+            int delta = e.Delta;
+            if (AsStack)
+                delta = -delta;
+            if (delta > 0)
                 SelectedAddress -= wordsWide;
-            else if (e.Delta < 0)
+            else if (delta < 0)
                 SelectedAddress += wordsWide;
             this.Invalidate();
             base.OnMouseWheel(e);
@@ -44,14 +48,17 @@ namespace Lettuce
 
         public MemoryDisplay(ref DCPU CPU)
         {
+            AsStack = false;
             InitializeComponent();
             this.CPU = CPU;
         }
 
         private void MemoryDisplay_Paint(object sender, PaintEventArgs e)
         {
+            this.Font = new Font(FontFamily.GenericMonospace, 12);
+
             e.Graphics.FillRectangle(Brushes.White, this.ClientRectangle);
-            ushort address = SelectedAddress;
+            ushort address = (ushort)(SelectedAddress + (AsStack ? 1 : 0));
             for (int y = 0; y < this.Height; y += TextRenderer.MeasureText("0000", this.Font).Height + 2)
             {
                 e.Graphics.DrawString(Debugger.GetHexString(address, 4) + ":", this.Font, Brushes.Gray, 2, y);
@@ -62,12 +69,12 @@ namespace Lettuce
                     Size size = TextRenderer.MeasureText(value, this.Font);
                     if (x + size.Width < this.Width)
                     {
-                        if (CPU.PC == address)
+                        if ((CPU.PC == address && !AsStack) || (CPU.SP + 1 == address && AsStack))
                             e.Graphics.FillRectangle(Brushes.LightBlue, new Rectangle(x, y, size.Width - 4, size.Height));
-                        if (outlinedAddress == address)
+                        if (outlinedAddress == address && !AsStack)
                             e.Graphics.DrawRectangle(Pens.Black, new Rectangle(x, y, size.Width - 4, size.Height));
                         e.Graphics.DrawString(value, this.Font, Brushes.Black, x, y);
-                        address++;
+                        address += (ushort)(AsStack ? -1 : 1);
                         wordsWide++;
                     }
                     x += TextRenderer.MeasureText(value, this.Font).Width;

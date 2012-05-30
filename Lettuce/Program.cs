@@ -45,7 +45,7 @@ namespace Lettuce
             string binFile = null;
             bool littleEndian = false;
             List<Device> devices = new List<Device>();
-
+            CPU.IsRunning = false;
             for (int i = 0; i < args.Length; i++)
             {
                 string arg = args[i];
@@ -53,9 +53,8 @@ namespace Lettuce
                 {
                     switch (arg)
                     {
-                        case "-w":
-                        case "--wait":
-                            CPU.IsRunning = false;
+                        case "--no-wait":
+                            CPU.IsRunning = true;
                             break;
                         case "-c":
                         case "--connect":

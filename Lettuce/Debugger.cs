@@ -22,10 +22,27 @@ namespace Lettuce
             InitializeComponent();
             this.KeyPreview = true;
             this.CPU = CPU;
+            this.CPU.BreakpointHit += new EventHandler<BreakpointEventArgs>(CPU_BreakpointHit);
             this.rawMemoryDisplay.CPU = this.CPU;
+            this.stackDisplay.CPU = this.CPU;
+            this.disassemblyDisplay1.CPU = this.CPU;
             foreach (Device d in CPU.ConnectedDevices)
                 listBoxConnectedDevices.Items.Add(d.FriendlyName);
         }
+
+        void CPU_BreakpointHit(object sender, BreakpointEventArgs e)
+        {
+            if (breakpointHandled)
+            {
+                breakpointHandled = false;
+                e.ContinueExecution = true;
+                return;
+            }
+            (sender as DCPU).IsRunning = false;
+            ResetLayout();
+            breakpointHandled = true;
+        }
+        bool breakpointHandled = false;
 
         public static string GetHexString(uint value, int numDigits)
         {
@@ -244,7 +261,10 @@ namespace Lettuce
         {
             if ((sender as TextBox).Text.Length != 0)
                 CPU.PC = ushort.Parse((sender as TextBox).Text, NumberStyles.HexNumber);
+            if (!(disassemblyDisplay1.SelectedAddress < CPU.PC && disassemblyDisplay1.EndAddress > CPU.PC))
+                disassemblyDisplay1.SelectedAddress = CPU.PC;
             rawMemoryDisplay.Invalidate();
+            disassemblyDisplay1.Invalidate();
         }
 
         private void textBoxRegisterEX_TextChanged(object sender, EventArgs e)
@@ -259,6 +279,8 @@ namespace Lettuce
             if ((sender as TextBox).Text.Length != 0)
                 CPU.SP = ushort.Parse((sender as TextBox).Text, NumberStyles.HexNumber);
             rawMemoryDisplay.Invalidate();
+            stackDisplay.SelectedAddress = CPU.SP;
+            stackDisplay.Invalidate();
         }
 
         private void textBoxRegisterIA_TextChanged(object sender, EventArgs e)

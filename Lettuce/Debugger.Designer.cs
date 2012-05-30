@@ -30,10 +30,10 @@
         {
             this.components = new System.ComponentModel.Container();
             Tomato.DCPU dcpu1 = new Tomato.DCPU();
+            Tomato.DCPU dcpu2 = new Tomato.DCPU();
+            Tomato.DCPU dcpu3 = new Tomato.DCPU();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Debugger));
             this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.rawMemoryDisplay = new Lettuce.MemoryDisplay();
-            this.listBox2 = new System.Windows.Forms.ListBox();
             this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
@@ -85,6 +85,10 @@
             this.memoryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.gotoAddressToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.resetToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.label18 = new System.Windows.Forms.Label();
+            this.stackDisplay = new Lettuce.MemoryDisplay();
+            this.disassemblyDisplay1 = new Lettuce.DisassemblyDisplay();
+            this.rawMemoryDisplay = new Lettuce.MemoryDisplay();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -96,40 +100,18 @@
             this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBox1.Controls.Add(this.stackDisplay);
+            this.groupBox1.Controls.Add(this.label18);
+            this.groupBox1.Controls.Add(this.disassemblyDisplay1);
             this.groupBox1.Controls.Add(this.rawMemoryDisplay);
-            this.groupBox1.Controls.Add(this.listBox2);
             this.groupBox1.Controls.Add(this.label2);
             this.groupBox1.Controls.Add(this.label1);
             this.groupBox1.Location = new System.Drawing.Point(12, 27);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(470, 563);
+            this.groupBox1.Size = new System.Drawing.Size(589, 563);
             this.groupBox1.TabIndex = 0;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Memory";
-            // 
-            // rawMemoryDisplay
-            // 
-            this.rawMemoryDisplay.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.rawMemoryDisplay.CPU = dcpu1;
-            this.rawMemoryDisplay.Font = new System.Drawing.Font("Courier New", 12F);
-            this.rawMemoryDisplay.Location = new System.Drawing.Point(6, 32);
-            this.rawMemoryDisplay.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
-            this.rawMemoryDisplay.Name = "rawMemoryDisplay";
-            this.rawMemoryDisplay.SelectedAddress = ((ushort)(0));
-            this.rawMemoryDisplay.Size = new System.Drawing.Size(455, 238);
-            this.rawMemoryDisplay.TabIndex = 4;
-            // 
-            // listBox2
-            // 
-            this.listBox2.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.listBox2.FormattingEnabled = true;
-            this.listBox2.Location = new System.Drawing.Point(9, 289);
-            this.listBox2.Name = "listBox2";
-            this.listBox2.Size = new System.Drawing.Size(452, 264);
-            this.listBox2.TabIndex = 3;
             // 
             // label2
             // 
@@ -145,7 +127,7 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(6, 16);
+            this.label1.Location = new System.Drawing.Point(126, 16);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(69, 13);
             this.label1.TabIndex = 0;
@@ -186,7 +168,7 @@
             this.groupBox2.Controls.Add(this.label4);
             this.groupBox2.Controls.Add(this.label3);
             this.groupBox2.Controls.Add(this.checkBoxRunning);
-            this.groupBox2.Location = new System.Drawing.Point(488, 27);
+            this.groupBox2.Location = new System.Drawing.Point(607, 27);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Size = new System.Drawing.Size(167, 278);
             this.groupBox2.TabIndex = 1;
@@ -502,7 +484,7 @@
             this.groupBox3.Controls.Add(this.labelHardwareID);
             this.groupBox3.Controls.Add(this.listBoxConnectedDevices);
             this.groupBox3.Controls.Add(this.label17);
-            this.groupBox3.Location = new System.Drawing.Point(488, 311);
+            this.groupBox3.Location = new System.Drawing.Point(607, 311);
             this.groupBox3.Name = "groupBox3";
             this.groupBox3.Size = new System.Drawing.Size(167, 279);
             this.groupBox3.TabIndex = 2;
@@ -573,7 +555,7 @@
             this.memoryToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(664, 24);
+            this.menuStrip1.Size = new System.Drawing.Size(783, 24);
             this.menuStrip1.TabIndex = 3;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -650,11 +632,60 @@
             this.resetToolStripMenuItem1.Text = "Reset";
             this.resetToolStripMenuItem1.Click += new System.EventHandler(this.resetToolStripMenuItem1_Click);
             // 
+            // label18
+            // 
+            this.label18.AutoSize = true;
+            this.label18.Location = new System.Drawing.Point(6, 16);
+            this.label18.Name = "label18";
+            this.label18.Size = new System.Drawing.Size(35, 13);
+            this.label18.TabIndex = 6;
+            this.label18.Text = "Stack";
+            // 
+            // stackDisplay
+            // 
+            this.stackDisplay.AsStack = true;
+            this.stackDisplay.CPU = dcpu1;
+            this.stackDisplay.Font = new System.Drawing.Font("Courier New", 12F);
+            this.stackDisplay.Location = new System.Drawing.Point(8, 32);
+            this.stackDisplay.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
+            this.stackDisplay.Name = "stackDisplay";
+            this.stackDisplay.SelectedAddress = ((ushort)(0));
+            this.stackDisplay.Size = new System.Drawing.Size(113, 238);
+            this.stackDisplay.TabIndex = 7;
+            // 
+            // disassemblyDisplay1
+            // 
+            this.disassemblyDisplay1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.disassemblyDisplay1.CPU = dcpu2;
+            this.disassemblyDisplay1.Font = new System.Drawing.Font("Courier New", 12F);
+            this.disassemblyDisplay1.Location = new System.Drawing.Point(6, 289);
+            this.disassemblyDisplay1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.disassemblyDisplay1.Name = "disassemblyDisplay1";
+            this.disassemblyDisplay1.SelectedAddress = ((ushort)(0));
+            this.disassemblyDisplay1.Size = new System.Drawing.Size(574, 264);
+            this.disassemblyDisplay1.TabIndex = 5;
+            // 
+            // rawMemoryDisplay
+            // 
+            this.rawMemoryDisplay.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.rawMemoryDisplay.AsStack = false;
+            this.rawMemoryDisplay.CPU = dcpu3;
+            this.rawMemoryDisplay.Font = new System.Drawing.Font("Courier New", 12F);
+            this.rawMemoryDisplay.Location = new System.Drawing.Point(129, 32);
+            this.rawMemoryDisplay.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
+            this.rawMemoryDisplay.Name = "rawMemoryDisplay";
+            this.rawMemoryDisplay.SelectedAddress = ((ushort)(0));
+            this.rawMemoryDisplay.Size = new System.Drawing.Size(451, 238);
+            this.rawMemoryDisplay.TabIndex = 4;
+            // 
             // Debugger
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(664, 602);
+            this.ClientSize = new System.Drawing.Size(783, 602);
             this.Controls.Add(this.groupBox3);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);
@@ -680,7 +711,6 @@
         #endregion
 
         private System.Windows.Forms.GroupBox groupBox1;
-        private System.Windows.Forms.ListBox listBox2;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.GroupBox groupBox2;
@@ -733,6 +763,9 @@
         private System.Windows.Forms.ToolStripMenuItem memoryToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem gotoAddressToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem resetToolStripMenuItem1;
+        private DisassemblyDisplay disassemblyDisplay1;
+        private MemoryDisplay stackDisplay;
+        private System.Windows.Forms.Label label18;
 
     }
 }
