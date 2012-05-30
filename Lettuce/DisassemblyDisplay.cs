@@ -186,10 +186,10 @@ namespace Lettuce
                     {
                         ushort oldPC = CPU.PC;
                         ushort oldSP = CPU.SP;
-                        CPU.PC = Disassembly[index].Address;
+                        CPU.PC = (ushort)(Disassembly[index].Address + 1);
                         int valueA = 0, valueB = 0;
-                        ushort valueBcalc = CPU.Get(Disassembly[index].ValueB);
                         ushort valueAcalc = CPU.Get(Disassembly[index].ValueA);
+                        ushort valueBcalc = CPU.Get(Disassembly[index].ValueB);
                         if (Disassembly[index].Opcode == 0)
                         {
                             valueB = int.MaxValue;
