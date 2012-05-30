@@ -47,20 +47,19 @@
             // textBox1
             // 
             this.textBox1.Location = new System.Drawing.Point(12, 25);
-            this.textBox1.MaxLength = 4;
+            this.textBox1.MaxLength = 1024;
             this.textBox1.Name = "textBox1";
             this.textBox1.Size = new System.Drawing.Size(131, 20);
             this.textBox1.TabIndex = 1;
-            this.textBox1.KeyDown += new System.Windows.Forms.KeyEventHandler(this.textBox1_KeyDown);
             // 
             // label1
             // 
             this.label1.AutoSize = true;
             this.label1.Location = new System.Drawing.Point(12, 9);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(85, 13);
+            this.label1.Size = new System.Drawing.Size(48, 13);
             this.label1.TabIndex = 2;
-            this.label1.Text = "Address (in hex):";
+            this.label1.Text = "Address:";
             // 
             // GoToAddressForm
             // 
