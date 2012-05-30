@@ -37,8 +37,6 @@ namespace Lettuce
         {
             ((HandledMouseEventArgs)e).Handled = true;
             int delta = e.Delta;
-            if (AsStack)
-                delta = -delta;
             if (delta > 0)
                 SelectedAddress -= wordsWide;
             else if (delta < 0)
@@ -76,12 +74,12 @@ namespace Lettuce
                     Size size = TextRenderer.MeasureText(value, this.Font);
                     if (x + size.Width < this.Width)
                     {
-                        if (CPU.SP + 1 == address && AsStack)
+                        if (CPU.SP == address && AsStack)
                             e.Graphics.FillRectangle(Brushes.LightBlue, new Rectangle(x, y, size.Width - 4, size.Height - 1));
                         if (outlinedAddress == address && !AsStack)
                             e.Graphics.DrawRectangle(Pens.Black, new Rectangle(x, y, size.Width - 4, size.Height - 1));
                         e.Graphics.DrawString(value, this.Font, Brushes.Black, x, y);
-                        address += (ushort)(AsStack ? -1 : 1);
+                        address++;
                         wordsWide++;
                     }
                     x += TextRenderer.MeasureText(value, this.Font).Width;
