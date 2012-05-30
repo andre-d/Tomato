@@ -58,7 +58,7 @@ namespace Lettuce
             this.Font = new Font(FontFamily.GenericMonospace, 12);
 
             e.Graphics.FillRectangle(Brushes.White, this.ClientRectangle);
-            ushort address = (ushort)(SelectedAddress + (AsStack ? 1 : 0));
+            ushort address = SelectedAddress;
             for (int y = 0; y < this.Height; y += TextRenderer.MeasureText("0000", this.Font).Height + 2)
             {
                 e.Graphics.DrawString(Debugger.GetHexString(address, 4) + ":", this.Font, Brushes.Gray, 2, y);

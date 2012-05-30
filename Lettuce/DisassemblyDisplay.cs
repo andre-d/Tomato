@@ -72,6 +72,7 @@ namespace Lettuce
             Disassembly = disassembler.FastDisassemble(ref CPU.Memory, SelectedAddress, (ushort)(SelectedAddress + 100));
 
             int index = 0;
+            bool setLast = false;
 
             for (int y = 0; y < this.Height; y += TextRenderer.MeasureText("0000", this.Font).Height + 2)
             {
@@ -89,10 +90,16 @@ namespace Lettuce
                 e.Graphics.DrawString(address, this.Font, Brushes.Gray, 2, y);
 
                 e.Graphics.DrawString(Disassembly[index].Code, this.Font, foreground, 2 + TextRenderer.MeasureText(address, this.Font).Width + 3, y);
+                if (y + TextRenderer.MeasureText(address, this.Font).Height > this.Height)
+                {
+                    setLast = true;
+                    EndAddress = Disassembly[index].Address;
+                }
 
                 index++;
             }
-            EndAddress = Disassembly[index--].Address;
+            if (!setLast)
+                EndAddress = Disassembly[index--].Address;
             e.Graphics.DrawRectangle(Pens.Black, new Rectangle(0, 0, this.Width - 1, this.Height - 1));
         }
     }
