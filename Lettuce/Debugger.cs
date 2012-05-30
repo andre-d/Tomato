@@ -32,6 +32,15 @@ namespace Lettuce
 
         void CPU_BreakpointHit(object sender, BreakpointEventArgs e)
         {
+            if (stepOverEnabled)
+            {
+                CPU.Breakpoints.Remove(CPU.PC);
+                e.ContinueExecution = false;
+                (sender as DCPU).IsRunning = false;
+                disassemblyDisplay1.EnableUpdates = true;
+                ResetLayout();
+                return;
+            }
             if (breakpointHandled)
             {
                 breakpointHandled = false;
@@ -261,7 +270,7 @@ namespace Lettuce
         {
             if ((sender as TextBox).Text.Length != 0)
                 CPU.PC = ushort.Parse((sender as TextBox).Text, NumberStyles.HexNumber);
-            if (!(disassemblyDisplay1.SelectedAddress < CPU.PC && disassemblyDisplay1.EndAddress > CPU.PC))
+            if (!(disassemblyDisplay1.SelectedAddress < CPU.PC && disassemblyDisplay1.EndAddress > CPU.PC) && disassemblyDisplay1.EnableUpdates)
                 disassemblyDisplay1.SelectedAddress = CPU.PC;
             rawMemoryDisplay.Invalidate();
             disassemblyDisplay1.Invalidate();
@@ -290,9 +299,17 @@ namespace Lettuce
             rawMemoryDisplay.Invalidate();
         }
 
+        ushort stepOverAddress = 0;
+        bool stepOverEnabled = false;
         private void buttonStepOver_Click(object sender, EventArgs e)
         {
-            // TODO
+            // Set a breakpoint ahead of PC
+            ushort length = CPU.InstructionLength(CPU.PC);
+            CPU.Breakpoints.Add((ushort)(CPU.PC + length));
+            stepOverAddress = (ushort)(CPU.PC + length);
+            stepOverEnabled = true;
+            disassemblyDisplay1.EnableUpdates = false;
+            checkBoxRunning.Checked = !checkBoxRunning.Checked; // Run the CPU
         }
 
         private void buttonStepInto_Click(object sender, EventArgs e)

@@ -46,6 +46,23 @@ namespace Tomato
         private static Random Random;
         private int cycles = 0;
 
+        public ushort InstructionLength(ushort address)
+        {
+            ushort length = 1;
+            ushort instruction = Memory[address];
+            byte opcode = (byte)(instruction & 0x1F);
+            byte valueB = (byte)((instruction & 0x3E0) >> 5);
+            byte valueA = (byte)((instruction & 0xFC00) >> 10);
+            length += (ushort)(((valueA >= 0x10 && valueA <= 0x17) ||
+                                 valueA == 0x1E || valueA == 0x1F) ? 1 : 0);
+            if (opcode != 0)
+            {
+                length += (ushort)(((valueB >= 0x10 && valueB <= 0x17) ||
+                     valueB == 0x1E || valueB == 0x1F) ? 1 : 0);
+            }
+            return length;
+        }
+
         public void Execute(int CyclesToExecute)
         {
             if (!IsRunning && CyclesToExecute != -1)

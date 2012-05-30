@@ -25,6 +25,7 @@ namespace Lettuce
             InitializeComponent();
             this.Font = new Font(FontFamily.GenericMonospace, 8);
             this.MouseMove += new MouseEventHandler(DisassemblyDisplay_MouseMove);
+            EnableUpdates = true;
         }
 
         void DisassemblyDisplay_MouseMove(object sender, MouseEventArgs e)
@@ -52,10 +53,12 @@ namespace Lettuce
             this.CPU = CPU;
             this.Font = new Font(FontFamily.GenericMonospace, 8);
             this.MouseMove += new MouseEventHandler(DisassemblyDisplay_MouseMove);
+            EnableUpdates = true;
         }
 
         static Color[] PriorToPC;
         List<CodeEntry> Disassembly;
+        public bool EnableUpdates { get; set; }
 
         private void DisassemblyDisplay_Paint(object sender, PaintEventArgs e)
         {
