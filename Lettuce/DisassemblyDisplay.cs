@@ -224,5 +224,15 @@ namespace Lettuce
             }
             e.Graphics.DrawRectangle(Pens.Black, new Rectangle(0, 0, this.Width - 1, this.Height - 1));
         }
+
+        private void gotoAddressToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            GoToAddressForm gtaf = new GoToAddressForm(SelectedAddress);
+            if (gtaf.ShowDialog() == DialogResult.OK)
+            {
+                SelectedAddress = gtaf.Value;
+                this.Invalidate();
+            }
+        }
     }
 }
