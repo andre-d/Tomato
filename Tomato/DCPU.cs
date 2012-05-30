@@ -159,12 +159,16 @@ namespace Tomato
                         cycles--;
                         if (opB + opA > 0xFFFF)
                             EX = 0x0001;
+                        else
+                            EX = 0;
                         Set(valueB, (ushort)(opB + opA));
                         break;
                     case 0x03: // SUB b, a
                         cycles--;
                         if (opB - opA < 0)
                             EX = 0xFFFF;
+                        else
+                            EX = 0;
                         Set(valueB, (ushort)(opB - opA));
                         break;
                     case 0x04: // MUL b, a
