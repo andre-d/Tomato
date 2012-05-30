@@ -100,8 +100,8 @@ namespace Tomato
                     PC = pc_old;
                     SP = sp_old;
                 }
-                short opB_s = (short)opA;
-                short opA_s = (short)opB;
+                short opB_s = (short)opB;
+                short opA_s = (short)opA;
                 cycles--;
                 switch (opcode)
                 {

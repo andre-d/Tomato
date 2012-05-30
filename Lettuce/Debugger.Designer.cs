@@ -34,10 +34,7 @@
             Tomato.DCPU dcpu3 = new Tomato.DCPU();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Debugger));
             this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.stackDisplay = new Lettuce.MemoryDisplay();
             this.label18 = new System.Windows.Forms.Label();
-            this.disassemblyDisplay1 = new Lettuce.DisassemblyDisplay();
-            this.rawMemoryDisplay = new Lettuce.MemoryDisplay();
             this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
@@ -92,6 +89,10 @@
             this.loadListingToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.organicToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.blueDASToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.stackDisplay = new Lettuce.MemoryDisplay();
+            this.disassemblyDisplay1 = new Lettuce.DisassemblyDisplay();
+            this.rawMemoryDisplay = new Lettuce.MemoryDisplay();
+            this.defineValueToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -116,18 +117,6 @@
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Memory";
             // 
-            // stackDisplay
-            // 
-            this.stackDisplay.AsStack = true;
-            this.stackDisplay.CPU = dcpu1;
-            this.stackDisplay.Font = new System.Drawing.Font("Courier New", 12F);
-            this.stackDisplay.Location = new System.Drawing.Point(8, 32);
-            this.stackDisplay.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
-            this.stackDisplay.Name = "stackDisplay";
-            this.stackDisplay.SelectedAddress = ((ushort)(0));
-            this.stackDisplay.Size = new System.Drawing.Size(113, 238);
-            this.stackDisplay.TabIndex = 7;
-            // 
             // label18
             // 
             this.label18.AutoSize = true;
@@ -136,36 +125,6 @@
             this.label18.Size = new System.Drawing.Size(35, 13);
             this.label18.TabIndex = 6;
             this.label18.Text = "Stack";
-            // 
-            // disassemblyDisplay1
-            // 
-            this.disassemblyDisplay1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.disassemblyDisplay1.CPU = dcpu2;
-            this.disassemblyDisplay1.EnableUpdates = true;
-            this.disassemblyDisplay1.EndAddress = ((ushort)(0));
-            this.disassemblyDisplay1.Font = new System.Drawing.Font("Courier New", 12F);
-            this.disassemblyDisplay1.Location = new System.Drawing.Point(6, 289);
-            this.disassemblyDisplay1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
-            this.disassemblyDisplay1.Name = "disassemblyDisplay1";
-            this.disassemblyDisplay1.SelectedAddress = ((ushort)(0));
-            this.disassemblyDisplay1.Size = new System.Drawing.Size(574, 264);
-            this.disassemblyDisplay1.TabIndex = 5;
-            // 
-            // rawMemoryDisplay
-            // 
-            this.rawMemoryDisplay.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.rawMemoryDisplay.AsStack = false;
-            this.rawMemoryDisplay.CPU = dcpu3;
-            this.rawMemoryDisplay.Font = new System.Drawing.Font("Courier New", 12F);
-            this.rawMemoryDisplay.Location = new System.Drawing.Point(129, 32);
-            this.rawMemoryDisplay.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
-            this.rawMemoryDisplay.Name = "rawMemoryDisplay";
-            this.rawMemoryDisplay.SelectedAddress = ((ushort)(0));
-            this.rawMemoryDisplay.Size = new System.Drawing.Size(451, 238);
-            this.rawMemoryDisplay.TabIndex = 4;
             // 
             // label2
             // 
@@ -627,14 +586,14 @@
             // 
             this.stopToolStripMenuItem.Name = "stopToolStripMenuItem";
             this.stopToolStripMenuItem.ShortcutKeyDisplayString = "F5";
-            this.stopToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.stopToolStripMenuItem.Size = new System.Drawing.Size(117, 22);
             this.stopToolStripMenuItem.Text = "Stop";
             this.stopToolStripMenuItem.Click += new System.EventHandler(this.checkBoxRunning_CheckedChanged);
             // 
             // resetToolStripMenuItem
             // 
             this.resetToolStripMenuItem.Name = "resetToolStripMenuItem";
-            this.resetToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.resetToolStripMenuItem.Size = new System.Drawing.Size(117, 22);
             this.resetToolStripMenuItem.Text = "Reset";
             this.resetToolStripMenuItem.Click += new System.EventHandler(this.resetToolStripMenuItem_Click);
             // 
@@ -643,7 +602,8 @@
             this.debugToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.stepIntoToolStripMenuItem,
             this.stepOverToolStripMenuItem,
-            this.loadListingToolStripMenuItem});
+            this.loadListingToolStripMenuItem,
+            this.defineValueToolStripMenuItem});
             this.debugToolStripMenuItem.Name = "debugToolStripMenuItem";
             this.debugToolStripMenuItem.Size = new System.Drawing.Size(54, 20);
             this.debugToolStripMenuItem.Text = "Debug";
@@ -700,15 +660,64 @@
             // organicToolStripMenuItem
             // 
             this.organicToolStripMenuItem.Name = "organicToolStripMenuItem";
-            this.organicToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.organicToolStripMenuItem.Size = new System.Drawing.Size(119, 22);
             this.organicToolStripMenuItem.Text = "Organic";
             this.organicToolStripMenuItem.Click += new System.EventHandler(this.organicToolStripMenuItem_Click);
             // 
             // blueDASToolStripMenuItem
             // 
             this.blueDASToolStripMenuItem.Name = "blueDASToolStripMenuItem";
-            this.blueDASToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.blueDASToolStripMenuItem.Size = new System.Drawing.Size(119, 22);
             this.blueDASToolStripMenuItem.Text = "BlueDAS";
+            // 
+            // stackDisplay
+            // 
+            this.stackDisplay.AsStack = true;
+            this.stackDisplay.CPU = dcpu1;
+            this.stackDisplay.Font = new System.Drawing.Font("Courier New", 12F);
+            this.stackDisplay.Location = new System.Drawing.Point(8, 32);
+            this.stackDisplay.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
+            this.stackDisplay.Name = "stackDisplay";
+            this.stackDisplay.SelectedAddress = ((ushort)(0));
+            this.stackDisplay.Size = new System.Drawing.Size(113, 238);
+            this.stackDisplay.TabIndex = 7;
+            // 
+            // disassemblyDisplay1
+            // 
+            this.disassemblyDisplay1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.disassemblyDisplay1.CPU = dcpu2;
+            this.disassemblyDisplay1.EnableUpdates = true;
+            this.disassemblyDisplay1.EndAddress = ((ushort)(0));
+            this.disassemblyDisplay1.Font = new System.Drawing.Font("Courier New", 12F);
+            this.disassemblyDisplay1.Location = new System.Drawing.Point(6, 289);
+            this.disassemblyDisplay1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.disassemblyDisplay1.Name = "disassemblyDisplay1";
+            this.disassemblyDisplay1.SelectedAddress = ((ushort)(0));
+            this.disassemblyDisplay1.Size = new System.Drawing.Size(574, 264);
+            this.disassemblyDisplay1.TabIndex = 5;
+            // 
+            // rawMemoryDisplay
+            // 
+            this.rawMemoryDisplay.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.rawMemoryDisplay.AsStack = false;
+            this.rawMemoryDisplay.CPU = dcpu3;
+            this.rawMemoryDisplay.Font = new System.Drawing.Font("Courier New", 12F);
+            this.rawMemoryDisplay.Location = new System.Drawing.Point(129, 32);
+            this.rawMemoryDisplay.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
+            this.rawMemoryDisplay.Name = "rawMemoryDisplay";
+            this.rawMemoryDisplay.SelectedAddress = ((ushort)(0));
+            this.rawMemoryDisplay.Size = new System.Drawing.Size(451, 238);
+            this.rawMemoryDisplay.TabIndex = 4;
+            // 
+            // defineValueToolStripMenuItem
+            // 
+            this.defineValueToolStripMenuItem.Name = "defineValueToolStripMenuItem";
+            this.defineValueToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.defineValueToolStripMenuItem.Text = "Define Value";
+            this.defineValueToolStripMenuItem.Click += new System.EventHandler(this.defineValueToolStripMenuItem_Click);
             // 
             // Debugger
             // 
@@ -798,6 +807,7 @@
         private System.Windows.Forms.ToolStripMenuItem loadListingToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem organicToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem blueDASToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem defineValueToolStripMenuItem;
 
     }
 }

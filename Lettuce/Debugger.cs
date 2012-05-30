@@ -455,5 +455,13 @@ namespace Lettuce
                 }
             }
         }
+
+        private void defineValueToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            DefineValueForm dvf = new DefineValueForm();
+            dvf.ShowDialog();
+            if (!KnownLabels.ContainsKey(dvf.Value))
+                KnownLabels.Add(dvf.Value, dvf.Name);
+        }
     }
 }

@@ -56,6 +56,12 @@
     <Compile Include="Debugger.Designer.cs">
       <DependentUpon>Debugger.cs</DependentUpon>
     </Compile>
+    <Compile Include="DefineValueForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="DefineValueForm.Designer.cs">
+      <DependentUpon>DefineValueForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="DisassemblyDisplay.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -107,6 +113,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Debugger.resx">
       <DependentUpon>Debugger.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DefineValueForm.resx">
+      <DependentUpon>DefineValueForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="DisassemblyDisplay.resx">
       <DependentUpon>DisassemblyDisplay.cs</DependentUpon>
