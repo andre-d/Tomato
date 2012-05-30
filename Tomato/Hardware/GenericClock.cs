@@ -80,7 +80,13 @@ namespace Tomato.Hardware
 
         public override void Reset()
         {
-            throw new NotImplementedException();
+            if (Clock != null)
+            {
+                Clock.Dispose();
+                Clock = null;
+            }
+            ElapsedTicks = 0;
+            InterruptMessage = 0;
         }
     }
 }

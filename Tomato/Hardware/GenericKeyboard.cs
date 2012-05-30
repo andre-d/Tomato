@@ -188,7 +188,6 @@ namespace Tomato.Hardware
                 PressedKeys.Add(code);
             if (InterruptMessage != 0)
                 AttachedCPU.FireInterrupt(InterruptMessage);
-            Console.WriteLine("Key down: " + KeyCode.ToString() + " (" + code + ")");
         }
 
         public void KeyUp(Keys KeyCode)
@@ -196,7 +195,6 @@ namespace Tomato.Hardware
             ushort code = GetKeyValue(KeyCode);
             if (PressedKeys.Contains(code))
                 PressedKeys.Remove(code);
-            Console.WriteLine("Key up: " + KeyCode.ToString() + " (" + code + ")");
         }
     }
 }

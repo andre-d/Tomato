@@ -432,6 +432,10 @@ namespace Lettuce
                 ushort address = 0;
                 if (addressText != "NOLIST")
                     address = ushort.Parse(addressText, NumberStyles.HexNumber);
+                if (line.Substring(line.IndexOf(" ")).Trim().StartsWith("ERROR"))
+                    continue;
+                if (line.Substring(line.IndexOf(" ")).Trim().StartsWith("WARNING"))
+                    continue;
                 line = line.Substring(line.IndexOf("  ")).Trim();
                 if (line.SafeContains(':'))
                 {
