@@ -49,6 +49,7 @@ namespace Tomato.Hardware
                             Clock = null;
                         }
                     }
+                    ElapsedTicks = 0;
                     break;
                 case 1:
                     AttachedCPU.C = ElapsedTicks;
@@ -57,7 +58,6 @@ namespace Tomato.Hardware
                     InterruptMessage = AttachedCPU.B;
                     break;
             }
-            ElapsedTicks = 0;
             return 0;
         }
 

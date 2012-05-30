@@ -240,67 +240,51 @@ namespace Tomato
                         break;
                     case 0x10: // IFB b, a
                         cycles -= 2;
+                        Get(valueB);
                         if (!((ushort)(opB & opA) != 0))
-                        {
-                            Get(valueB);
                             SkipIfChain();
-                        }
                         break;
                     case 0x11: // IFC b, a
                         cycles -= 2;
+                        Get(valueB);
                         if (!((ushort)(opB & opA) == 0))
-                        {
-                            Get(valueB);
                             SkipIfChain();
-                        }
                         break;
                     case 0x12: // IFE b, a
                         cycles -= 2;
+                        Get(valueB);
                         if (!(opB == opA))
-                        {
-                            Get(valueB);
                             SkipIfChain();
-                        }
                         break;
                     case 0x13: // IFN b, a
                         cycles -= 2;
+                        Get(valueB);
                         if (!(opB != opA))
-                        {
-                            Get(valueB);
                             SkipIfChain();
-                        }
                         break;
                     case 0x14: // IFG b, a
                         cycles -= 2;
+                        Get(valueB);
                         if (!(opB > opA))
-                        {
-                            Get(valueB);
                             SkipIfChain();
-                        }
                         break;
                     case 0x15: // IFA b, a
                         cycles -= 2;
+                        Get(valueB);
                         if (!(opB_s > opA_s))
-                        {
-                            Get(valueB);
                             SkipIfChain();
-                        }
                         break;
                     case 0x16: // IFL b, a
                         cycles -= 2;
+                        Get(valueB);
                         if (!(opB < opA))
-                        {
-                            Get(valueB);
                             SkipIfChain();
-                        }
                         break;
                     case 0x17: // IFU b, a
                         cycles += 2;
+                        Get(valueB);
                         if (!(opB_s < opA_s))
-                        {
-                            Get(valueB);
                             SkipIfChain();
-                        }
                         break;
                     case 0x1A: // ADX b, a
                         cycles -= 2;
