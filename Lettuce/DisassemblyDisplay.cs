@@ -77,9 +77,12 @@ namespace Lettuce
         {
             ushort address = SelectedAddress;
             int offset = e.Y / (TextRenderer.MeasureText("0000", this.Font).Height + 2);
+            int index = 0;
             while (offset != 0)
             {
-                address += CPU.InstructionLength(address);
+                if (!Disassembly[index].IsLabel)
+                    address += CPU.InstructionLength(address);
+                index++;
                 offset--;
             }
             if (CPU.Breakpoints.Contains(address))
@@ -126,7 +129,22 @@ namespace Lettuce
                 if (Disassembly[index].Address == CPU.PC)
                 {
                     if (CPU.Breakpoints.Contains(Disassembly[index].Address))
-                        e.Graphics.FillRectangle(Brushes.Yellow, new Rectangle(0, y + 2, this.Width, TextRenderer.MeasureText(address, this.Font).Height - 2));
+                    {
+                        if (Disassembly[index].IsLabel)
+                            e.Graphics.FillRectangle(Brushes.Yellow, new Rectangle(0, y + 2, this.Width, TextRenderer.MeasureText(address, this.Font).Height));
+                        else
+                        {
+                            if (index != 0)
+                            {
+                                if (Disassembly[index - 1].IsLabel)
+                                    e.Graphics.FillRectangle(Brushes.Yellow, new Rectangle(0, y, this.Width, TextRenderer.MeasureText(address, this.Font).Height));
+                                else
+                                    e.Graphics.FillRectangle(Brushes.Yellow, new Rectangle(0, y + 2, this.Width, TextRenderer.MeasureText(address, this.Font).Height - 2));
+                            }
+                            else
+                                e.Graphics.FillRectangle(Brushes.Yellow, new Rectangle(0, y + 2, this.Width, TextRenderer.MeasureText(address, this.Font).Height - 2));
+                        }
+                    }
                     else
                         e.Graphics.FillRectangle(Brushes.Yellow, new Rectangle(0, y, this.Width, TextRenderer.MeasureText(address, this.Font).Height + 2));
                     foreground = Brushes.Black;
@@ -156,6 +174,11 @@ namespace Lettuce
                 int x = MouseLocation.X;
                 for (int y = 0; y < this.Height; y += TextRenderer.MeasureText("0000", this.Font).Height + 2)
                 {
+                    if (Disassembly[index].IsLabel || Disassembly[index].Code.StartsWith("DAT"))
+                    {
+                        index++;
+                        continue;
+                    }
                     Size size = TextRenderer.MeasureText("0000: " + Disassembly[index].Code, this.Font);
                     size.Width += 5;
                     if (new Rectangle(new Point(0, y), size).IntersectsWith(
