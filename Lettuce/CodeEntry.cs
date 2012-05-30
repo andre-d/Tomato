@@ -11,6 +11,9 @@ namespace Inorganic
     public class CodeEntry
     {
         public string Code { get; set; }
+        public string OpcodeText { get; set; }
+        public string ValueAText { get; set; }
+        public string ValueBText { get; set; }
         public byte Opcode { get; set; }
         public byte ValueA { get; set; }
         public byte ValueB { get; set; }

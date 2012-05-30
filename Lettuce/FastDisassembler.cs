@@ -49,6 +49,7 @@ namespace Inorganic
                     entry.Code = GetOp(opcode);
                 else
                     entry.Code = GetNonbasicOp(valueB);
+                entry.OpcodeText = entry.Code;
                 if (entry.Code == null)
                 {
                     CodeEntry datEntry = new CodeEntry();
@@ -62,6 +63,8 @@ namespace Inorganic
                     {
                         string valueAdis = GetValue(valueA, false);
                         string valueBdis = GetValue(valueB, true);
+                        entry.ValueAText = valueAdis;
+                        entry.ValueBText = valueBdis;
                         entry.Code += " " + valueBdis + ", " + valueAdis;
                         output.Add(entry);
                     }
@@ -69,6 +72,7 @@ namespace Inorganic
                     {
                         string valueAdis = GetValue(valueA, false);
                         entry.Code += " " + valueAdis;
+                        entry.ValueAText = valueAdis;
                         output.Add(entry);
                     }
                 }

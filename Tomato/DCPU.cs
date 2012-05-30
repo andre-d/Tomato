@@ -386,7 +386,7 @@ namespace Tomato
 
         #region Get/Set
 
-        private void Set(byte destination, ushort value)
+        public void Set(byte destination, ushort value)
         {
             switch (destination)
             {
@@ -500,7 +500,7 @@ namespace Tomato
             }
         }
 
-        private ushort Get(byte target)
+        public ushort Get(byte target)
         {
             switch (target)
             {

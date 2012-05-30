@@ -113,6 +113,7 @@ namespace Lettuce
             e.Graphics.FillRectangle(Brushes.White, new Rectangle(0, 0, this.Width, 15));
             // Devices
             e.Graphics.DrawString(title, this.Font, Brushes.Black, new PointF(0, 0));
+            e.Graphics.DrawLine(Pens.Black, new Point(0, 15), new Point(this.Width, 15));
 
             e.Graphics.InterpolationMode = InterpolationMode.NearestNeighbor;
             e.Graphics.PixelOffsetMode = PixelOffsetMode.Half;

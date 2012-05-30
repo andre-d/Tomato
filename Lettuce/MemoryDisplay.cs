@@ -24,6 +24,7 @@ namespace Lettuce
             AsStack = false;
             this.CPU = new DCPU();
             InitializeComponent();
+            wordsWide = 8;
             this.MouseMove += new MouseEventHandler(MemoryDisplay_MouseMove);
         }
 
@@ -51,16 +52,22 @@ namespace Lettuce
             AsStack = false;
             InitializeComponent();
             this.CPU = CPU;
+            wordsWide = 8;
         }
 
         private void MemoryDisplay_Paint(object sender, PaintEventArgs e)
         {
             this.Font = new Font(FontFamily.GenericMonospace, 12);
+            bool dark = (int)(SelectedAddress / wordsWide) % 2 == 0;
 
             e.Graphics.FillRectangle(Brushes.White, this.ClientRectangle);
             ushort address = SelectedAddress;
             for (int y = 0; y < this.Height; y += TextRenderer.MeasureText("0000", this.Font).Height + 2)
             {
+                if (dark)
+                    e.Graphics.FillRectangle(new SolidBrush(Color.FromArgb(255, 230, 230, 230)), 0, y, this.Width, TextRenderer.MeasureText("0000", this.Font).Height);
+                dark = !dark;
+
                 e.Graphics.DrawString(Debugger.GetHexString(address, 4) + ":", this.Font, Brushes.Gray, 2, y);
                 wordsWide = 0;
                 for (int x = 4 + TextRenderer.MeasureText("0000:", this.Font).Width; x < this.Width; )
@@ -69,10 +76,10 @@ namespace Lettuce
                     Size size = TextRenderer.MeasureText(value, this.Font);
                     if (x + size.Width < this.Width)
                     {
-                        if ((CPU.PC == address && !AsStack) || (CPU.SP + 1 == address && AsStack))
-                            e.Graphics.FillRectangle(Brushes.LightBlue, new Rectangle(x, y, size.Width - 4, size.Height));
+                        if (CPU.SP + 1 == address && AsStack)
+                            e.Graphics.FillRectangle(Brushes.LightBlue, new Rectangle(x, y, size.Width - 4, size.Height - 1));
                         if (outlinedAddress == address && !AsStack)
-                            e.Graphics.DrawRectangle(Pens.Black, new Rectangle(x, y, size.Width - 4, size.Height));
+                            e.Graphics.DrawRectangle(Pens.Black, new Rectangle(x, y, size.Width - 4, size.Height - 1));
                         e.Graphics.DrawString(value, this.Font, Brushes.Black, x, y);
                         address += (ushort)(AsStack ? -1 : 1);
                         wordsWide++;
