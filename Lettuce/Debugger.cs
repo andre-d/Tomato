@@ -9,6 +9,7 @@ using System.Windows.Forms;
 using Tomato;
 using Tomato.Hardware;
 using System.Globalization;
+using System.Reflection;
 
 namespace Lettuce
 {
@@ -16,6 +17,7 @@ namespace Lettuce
     {
         public DCPU CPU { get; set; }
         private bool MayUpdateLayout = true;
+        public List<Type> DeviceControllers;
 
         public Debugger(ref DCPU CPU)
         {
@@ -28,6 +30,16 @@ namespace Lettuce
             this.disassemblyDisplay1.CPU = this.CPU;
             foreach (Device d in CPU.ConnectedDevices)
                 listBoxConnectedDevices.Items.Add(d.FriendlyName);
+            // Load device controllers
+            DeviceControllers = new List<Type>();
+            foreach (Assembly asm in AppDomain.CurrentDomain.GetAssemblies())
+            {
+                var types = asm.GetTypes().Where(t => typeof(DeviceController).IsAssignableFrom(t) && t.IsAbstract == false);
+                foreach (var type in types)
+                {
+                    DeviceControllers.Add(type);
+                }
+            }
         }
 
         void CPU_BreakpointHit(object sender, BreakpointEventArgs e)
@@ -353,6 +365,27 @@ namespace Lettuce
         private void checkBoxOnFire_CheckedChanged(object sender, EventArgs e)
         {
             CPU.IsOnFire = checkBoxOnFire.Checked;
+        }
+
+        private void buttonEditDevice_Click(object sender, EventArgs e)
+        {
+            if (listBoxConnectedDevices.SelectedIndex == -1)
+                return;
+            Device d = CPU.ConnectedDevices[listBoxConnectedDevices.SelectedIndex];
+            CPU.IsRunning = false;
+            ResetLayout();
+            foreach (Type type in DeviceControllers)
+            {
+                DeviceController dc = (DeviceController)Activator.CreateInstance(type);
+                if (dc.TargetType == d.GetType())
+                {
+                    dc.Device = d;
+                    dc.CPU = CPU;
+                    dc.ShowDialog();
+                    return;
+                }
+            }
+            MessageBox.Show("No device controller for this kind of device can be found.");
         }
     }
 }

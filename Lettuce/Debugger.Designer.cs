@@ -34,6 +34,10 @@
             Tomato.DCPU dcpu3 = new Tomato.DCPU();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Debugger));
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.stackDisplay = new Lettuce.MemoryDisplay();
+            this.label18 = new System.Windows.Forms.Label();
+            this.disassemblyDisplay1 = new Lettuce.DisassemblyDisplay();
+            this.rawMemoryDisplay = new Lettuce.MemoryDisplay();
             this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
@@ -85,10 +89,6 @@
             this.memoryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.gotoAddressToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.resetToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
-            this.label18 = new System.Windows.Forms.Label();
-            this.stackDisplay = new Lettuce.MemoryDisplay();
-            this.disassemblyDisplay1 = new Lettuce.DisassemblyDisplay();
-            this.rawMemoryDisplay = new Lettuce.MemoryDisplay();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -112,6 +112,57 @@
             this.groupBox1.TabIndex = 0;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Memory";
+            // 
+            // stackDisplay
+            // 
+            this.stackDisplay.AsStack = true;
+            this.stackDisplay.CPU = dcpu1;
+            this.stackDisplay.Font = new System.Drawing.Font("Courier New", 12F);
+            this.stackDisplay.Location = new System.Drawing.Point(8, 32);
+            this.stackDisplay.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
+            this.stackDisplay.Name = "stackDisplay";
+            this.stackDisplay.SelectedAddress = ((ushort)(0));
+            this.stackDisplay.Size = new System.Drawing.Size(113, 238);
+            this.stackDisplay.TabIndex = 7;
+            // 
+            // label18
+            // 
+            this.label18.AutoSize = true;
+            this.label18.Location = new System.Drawing.Point(6, 16);
+            this.label18.Name = "label18";
+            this.label18.Size = new System.Drawing.Size(35, 13);
+            this.label18.TabIndex = 6;
+            this.label18.Text = "Stack";
+            // 
+            // disassemblyDisplay1
+            // 
+            this.disassemblyDisplay1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.disassemblyDisplay1.CPU = dcpu2;
+            this.disassemblyDisplay1.EnableUpdates = true;
+            this.disassemblyDisplay1.EndAddress = ((ushort)(0));
+            this.disassemblyDisplay1.Font = new System.Drawing.Font("Courier New", 12F);
+            this.disassemblyDisplay1.Location = new System.Drawing.Point(6, 289);
+            this.disassemblyDisplay1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.disassemblyDisplay1.Name = "disassemblyDisplay1";
+            this.disassemblyDisplay1.SelectedAddress = ((ushort)(0));
+            this.disassemblyDisplay1.Size = new System.Drawing.Size(574, 264);
+            this.disassemblyDisplay1.TabIndex = 5;
+            // 
+            // rawMemoryDisplay
+            // 
+            this.rawMemoryDisplay.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.rawMemoryDisplay.AsStack = false;
+            this.rawMemoryDisplay.CPU = dcpu3;
+            this.rawMemoryDisplay.Font = new System.Drawing.Font("Courier New", 12F);
+            this.rawMemoryDisplay.Location = new System.Drawing.Point(129, 32);
+            this.rawMemoryDisplay.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
+            this.rawMemoryDisplay.Name = "rawMemoryDisplay";
+            this.rawMemoryDisplay.SelectedAddress = ((ushort)(0));
+            this.rawMemoryDisplay.Size = new System.Drawing.Size(451, 238);
+            this.rawMemoryDisplay.TabIndex = 4;
             // 
             // label2
             // 
@@ -501,6 +552,7 @@
             this.buttonEditDevice.TabIndex = 5;
             this.buttonEditDevice.Text = "Edit Device";
             this.buttonEditDevice.UseVisualStyleBackColor = true;
+            this.buttonEditDevice.Click += new System.EventHandler(this.buttonEditDevice_Click);
             // 
             // labelVersion
             // 
@@ -631,55 +683,6 @@
             this.resetToolStripMenuItem1.Size = new System.Drawing.Size(187, 22);
             this.resetToolStripMenuItem1.Text = "Reset";
             this.resetToolStripMenuItem1.Click += new System.EventHandler(this.resetToolStripMenuItem1_Click);
-            // 
-            // label18
-            // 
-            this.label18.AutoSize = true;
-            this.label18.Location = new System.Drawing.Point(6, 16);
-            this.label18.Name = "label18";
-            this.label18.Size = new System.Drawing.Size(35, 13);
-            this.label18.TabIndex = 6;
-            this.label18.Text = "Stack";
-            // 
-            // stackDisplay
-            // 
-            this.stackDisplay.AsStack = true;
-            this.stackDisplay.CPU = dcpu1;
-            this.stackDisplay.Font = new System.Drawing.Font("Courier New", 12F);
-            this.stackDisplay.Location = new System.Drawing.Point(8, 32);
-            this.stackDisplay.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
-            this.stackDisplay.Name = "stackDisplay";
-            this.stackDisplay.SelectedAddress = ((ushort)(0));
-            this.stackDisplay.Size = new System.Drawing.Size(113, 238);
-            this.stackDisplay.TabIndex = 7;
-            // 
-            // disassemblyDisplay1
-            // 
-            this.disassemblyDisplay1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.disassemblyDisplay1.CPU = dcpu2;
-            this.disassemblyDisplay1.Font = new System.Drawing.Font("Courier New", 12F);
-            this.disassemblyDisplay1.Location = new System.Drawing.Point(6, 289);
-            this.disassemblyDisplay1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
-            this.disassemblyDisplay1.Name = "disassemblyDisplay1";
-            this.disassemblyDisplay1.SelectedAddress = ((ushort)(0));
-            this.disassemblyDisplay1.Size = new System.Drawing.Size(574, 264);
-            this.disassemblyDisplay1.TabIndex = 5;
-            // 
-            // rawMemoryDisplay
-            // 
-            this.rawMemoryDisplay.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.rawMemoryDisplay.AsStack = false;
-            this.rawMemoryDisplay.CPU = dcpu3;
-            this.rawMemoryDisplay.Font = new System.Drawing.Font("Courier New", 12F);
-            this.rawMemoryDisplay.Location = new System.Drawing.Point(129, 32);
-            this.rawMemoryDisplay.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
-            this.rawMemoryDisplay.Name = "rawMemoryDisplay";
-            this.rawMemoryDisplay.SelectedAddress = ((ushort)(0));
-            this.rawMemoryDisplay.Size = new System.Drawing.Size(451, 238);
-            this.rawMemoryDisplay.TabIndex = 4;
             // 
             // Debugger
             // 

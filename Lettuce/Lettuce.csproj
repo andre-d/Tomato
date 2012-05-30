@@ -75,6 +75,15 @@
     <Compile Include="HardwareConfiguration.Designer.cs">
       <DependentUpon>HardwareConfiguration.cs</DependentUpon>
     </Compile>
+    <Compile Include="DeviceController.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="HardwareControllers\LEM1802Controller.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="HardwareControllers\LEM1802Controller.Designer.cs">
+      <DependentUpon>LEM1802Controller.cs</DependentUpon>
+    </Compile>
     <Compile Include="LEM1802Window.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -106,6 +115,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="HardwareConfiguration.resx">
       <DependentUpon>HardwareConfiguration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="HardwareControllers\LEM1802Controller.resx">
+      <DependentUpon>LEM1802Controller.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="LEM1802Window.resx">
       <DependentUpon>LEM1802Window.cs</DependentUpon>
@@ -149,6 +161,7 @@
   <ItemGroup>
     <Content Include="tomato.ico" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
