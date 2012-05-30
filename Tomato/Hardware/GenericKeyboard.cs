@@ -57,25 +57,25 @@ namespace Tomato.Hardware
 
         public override int HandleInterrupt()
         {
-            switch (AttachedCPU.A)
+            switch (AttachedCPU.Memory.A)
             {
                 case 0:
                     Buffer.Clear();
                     break;
                 case 1:
                     if (Buffer.Count != 0)
-                        AttachedCPU.C = Buffer.Dequeue();
+                        AttachedCPU.Memory.C = Buffer.Dequeue();
                     else
-                        AttachedCPU.C = 0;
+                        AttachedCPU.Memory.C = 0;
                     break;
                 case 2:
-                    if (PressedKeys.Contains(AttachedCPU.B))
-                        AttachedCPU.C = 1;
+                    if (PressedKeys.Contains(AttachedCPU.Memory.B))
+                        AttachedCPU.Memory.C = 1;
                     else
-                        AttachedCPU.C = 0;
+                        AttachedCPU.Memory.C = 0;
                     break;
                 case 3:
-                    InterruptMessage = AttachedCPU.B;
+                    InterruptMessage = AttachedCPU.Memory.B;
                     break;
             }
             return 0;

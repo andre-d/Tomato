@@ -32,25 +32,25 @@ namespace Tomato.Hardware
 
         public override int HandleInterrupt()
         {
-            switch (AttachedCPU.A)
+            switch (AttachedCPU.Memory.A)
             {
                 case 0:
                     GetStatus();
                     break;
                 case 1:
-                    UnitToSkip = (uint)(AttachedCPU.Memory[AttachedCPU.B] << 16);
-                    UnitToSkip |= AttachedCPU.Memory[AttachedCPU.B + 1];
+                    UnitToSkip = (uint)(AttachedCPU.Memory[AttachedCPU.Memory.B] << 16);
+                    UnitToSkip |= AttachedCPU.Memory[AttachedCPU.Memory.B + 1];
                     break;
                 case 2:
                     GetStatus();
-                    if (AttachedCPU.C == 0) // Error in spec?
+                    if (AttachedCPU.Memory.C == 0) // Error in spec?
                     {
                         // Trigger device
                         // Not sure what to do here.
                     }
                     break;
                 case 3:
-                    SkipUnit = AttachedCPU.B;
+                    SkipUnit = AttachedCPU.Memory.B;
                     break;
             }
             return 0;
@@ -58,13 +58,13 @@ namespace Tomato.Hardware
 
         private void GetStatus()
         {
-            AttachedCPU.C = 0;
-            AttachedCPU.B = 6; // Mechanical error
+            AttachedCPU.Memory.C = 0;
+            AttachedCPU.Memory.B = 6; // Mechanical error
         }
 
         public override void Reset()
         {
-            throw new NotImplementedException();
+            //throw new NotImplementedException();
         }
     }
 }

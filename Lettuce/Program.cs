@@ -125,7 +125,7 @@ namespace Lettuce
                             data.Add((ushort)(b | (a << 8)));
                     }
                 }
-                CPU.FlashMemory(data.ToArray());
+                CPU.Memory.Flash(data.ToArray());
             }
             else
                 CPU.IsRunning = false;

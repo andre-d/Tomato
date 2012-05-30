@@ -74,7 +74,7 @@ namespace Lettuce
                     Size size = TextRenderer.MeasureText(value, this.Font);
                     if (x + size.Width < this.Width)
                     {
-                        if (CPU.SP == address && AsStack)
+                        if (CPU.Memory.SP == address && AsStack)
                             e.Graphics.FillRectangle(Brushes.LightBlue, new Rectangle(x, y, size.Width - 4, size.Height - 1));
                         if (outlinedAddress == address && !AsStack)
                             e.Graphics.DrawRectangle(Pens.Black, new Rectangle(x, y, size.Width - 4, size.Height - 1));

@@ -35,10 +35,10 @@ namespace Tomato.Hardware
 
         public override int HandleInterrupt()
         {
-            switch (AttachedCPU.A)
+            switch (AttachedCPU.Memory.A)
             {
                 case 0:
-                    Frequency = AttachedCPU.B;
+                    Frequency = AttachedCPU.Memory.B;
                     if (Frequency != 0)
                         Clock = new Timer(Tick, null, (int)(1000 / (60d / Frequency)), Timeout.Infinite);
                     else
@@ -52,10 +52,10 @@ namespace Tomato.Hardware
                     ElapsedTicks = 0;
                     break;
                 case 1:
-                    AttachedCPU.C = ElapsedTicks;
+                    AttachedCPU.Memory.C = ElapsedTicks;
                     break;
                 case 2:
-                    InterruptMessage = AttachedCPU.B;
+                    InterruptMessage = AttachedCPU.Memory.B;
                     break;
             }
             return 0;
