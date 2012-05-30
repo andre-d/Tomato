@@ -77,6 +77,9 @@ namespace Lettuce
                                 }
                             }
                             break;
+                        case "--listing":
+                            Debugger.LoadOrganicListing(args[++i]);
+                            break;
                     }
                 }
                 else

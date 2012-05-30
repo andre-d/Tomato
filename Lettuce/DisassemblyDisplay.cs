@@ -57,7 +57,7 @@ namespace Lettuce
                 if (e.Delta > 0)
                     SelectedAddress--;
                 else if (e.Delta < 0)
-                    SelectedAddress++;
+                    SelectedAddress += CPU.InstructionLength(SelectedAddress);
                 this.Invalidate();
                 base.OnMouseWheel(e);
             }

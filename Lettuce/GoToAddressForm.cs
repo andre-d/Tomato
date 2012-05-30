@@ -23,7 +23,7 @@ namespace Lettuce
         private void button1_Click(object sender, EventArgs e)
         {
             ushort outValue;
-            if (!ushort.TryParse(textBox1.Text, out outValue))
+            if (!ushort.TryParse(textBox1.Text, NumberStyles.HexNumber, null, out outValue))
             {
                 foreach (var kvp in Debugger.KnownLabels)
                 {

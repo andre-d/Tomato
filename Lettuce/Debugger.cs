@@ -23,8 +23,10 @@ namespace Lettuce
         public Debugger(ref DCPU CPU)
         {
             InitializeComponent();
-            KnownLabels = new Dictionary<ushort, string>();
-            KnownCode = new Dictionary<ushort, string>();
+            if (KnownCode == null)
+                KnownCode = new Dictionary<ushort, string>();
+            if (KnownLabels == null)
+                KnownLabels = new Dictionary<ushort, string>();
 
             this.KeyPreview = true;
             this.CPU = CPU;
@@ -404,7 +406,17 @@ namespace Lettuce
             ofd.FileName = "";
             if (ofd.ShowDialog() != DialogResult.OK)
                 return;
-            StreamReader reader = new StreamReader(ofd.FileName);
+            LoadOrganicListing(ofd.FileName);
+            ResetLayout();
+        }
+
+        public static void LoadOrganicListing(string file)
+        {
+            if (KnownCode == null)
+                KnownCode = new Dictionary<ushort, string>();
+            if (KnownLabels == null)
+                KnownLabels = new Dictionary<ushort, string>();
+            StreamReader reader = new StreamReader(file);
             string listing = reader.ReadToEnd();
             reader.Close();
             string[] lines = listing.Replace("\r", "").Split('\n');
@@ -438,7 +450,6 @@ namespace Lettuce
                     }
                 }
             }
-            ResetLayout();
         }
     }
 }
