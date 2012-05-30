@@ -387,5 +387,10 @@ namespace Lettuce
             }
             MessageBox.Show("No device controller for this kind of device can be found.");
         }
+
+        private void organicToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }

@@ -304,15 +304,15 @@ namespace Tomato
                         break;
                     case 0x1A: // ADX b, a
                         cycles -= 2;
-                        if (opB + opA + EX > 0xFFFF)
-                            EX = 0x0001;
-                        Set(valueB, (ushort)(opB + opA + EX));
+                        uint resADX = (uint)(opB + opA + (short)EX);
+                        EX = (ushort)((resADX >> 16) & 0xFFFF);
+                        Set(valueB, (ushort)resADX);
                         break;
                     case 0x1B: // SBX b, a
                         cycles -= 2;
-                        if (opB - opA + EX > 0xFFFF)
-                            EX = 0x0001;
-                        Set(valueB, (ushort)(opB - opA + EX));
+                        uint resSBX = (uint)(opB - opA + (short)EX);
+                        EX = (ushort)((resSBX >> 16) & 0xFFFF);
+                        Set(valueB, (ushort)resSBX);
                         break;
                     case 0x1E: // STI b, a
                         cycles--;

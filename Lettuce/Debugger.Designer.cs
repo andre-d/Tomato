@@ -89,6 +89,9 @@
             this.memoryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.gotoAddressToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.resetToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.loadListingToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.organicToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.blueDASToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -624,14 +627,14 @@
             // 
             this.stopToolStripMenuItem.Name = "stopToolStripMenuItem";
             this.stopToolStripMenuItem.ShortcutKeyDisplayString = "F5";
-            this.stopToolStripMenuItem.Size = new System.Drawing.Size(117, 22);
+            this.stopToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.stopToolStripMenuItem.Text = "Stop";
             this.stopToolStripMenuItem.Click += new System.EventHandler(this.checkBoxRunning_CheckedChanged);
             // 
             // resetToolStripMenuItem
             // 
             this.resetToolStripMenuItem.Name = "resetToolStripMenuItem";
-            this.resetToolStripMenuItem.Size = new System.Drawing.Size(117, 22);
+            this.resetToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.resetToolStripMenuItem.Text = "Reset";
             this.resetToolStripMenuItem.Click += new System.EventHandler(this.resetToolStripMenuItem_Click);
             // 
@@ -639,7 +642,8 @@
             // 
             this.debugToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.stepIntoToolStripMenuItem,
-            this.stepOverToolStripMenuItem});
+            this.stepOverToolStripMenuItem,
+            this.loadListingToolStripMenuItem});
             this.debugToolStripMenuItem.Name = "debugToolStripMenuItem";
             this.debugToolStripMenuItem.Size = new System.Drawing.Size(54, 20);
             this.debugToolStripMenuItem.Text = "Debug";
@@ -648,7 +652,7 @@
             // 
             this.stepIntoToolStripMenuItem.Name = "stepIntoToolStripMenuItem";
             this.stepIntoToolStripMenuItem.ShortcutKeyDisplayString = "F6";
-            this.stepIntoToolStripMenuItem.Size = new System.Drawing.Size(144, 22);
+            this.stepIntoToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.stepIntoToolStripMenuItem.Text = "Step Into";
             this.stepIntoToolStripMenuItem.Click += new System.EventHandler(this.buttonStepInto_Click);
             // 
@@ -656,7 +660,7 @@
             // 
             this.stepOverToolStripMenuItem.Name = "stepOverToolStripMenuItem";
             this.stepOverToolStripMenuItem.ShortcutKeyDisplayString = "F7";
-            this.stepOverToolStripMenuItem.Size = new System.Drawing.Size(144, 22);
+            this.stepOverToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.stepOverToolStripMenuItem.Text = "Step Over";
             this.stepOverToolStripMenuItem.Click += new System.EventHandler(this.buttonStepOver_Click);
             // 
@@ -683,6 +687,28 @@
             this.resetToolStripMenuItem1.Size = new System.Drawing.Size(187, 22);
             this.resetToolStripMenuItem1.Text = "Reset";
             this.resetToolStripMenuItem1.Click += new System.EventHandler(this.resetToolStripMenuItem1_Click);
+            // 
+            // loadListingToolStripMenuItem
+            // 
+            this.loadListingToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.organicToolStripMenuItem,
+            this.blueDASToolStripMenuItem});
+            this.loadListingToolStripMenuItem.Name = "loadListingToolStripMenuItem";
+            this.loadListingToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.loadListingToolStripMenuItem.Text = "Load Listing";
+            // 
+            // organicToolStripMenuItem
+            // 
+            this.organicToolStripMenuItem.Name = "organicToolStripMenuItem";
+            this.organicToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.organicToolStripMenuItem.Text = "Organic";
+            this.organicToolStripMenuItem.Click += new System.EventHandler(this.organicToolStripMenuItem_Click);
+            // 
+            // blueDASToolStripMenuItem
+            // 
+            this.blueDASToolStripMenuItem.Name = "blueDASToolStripMenuItem";
+            this.blueDASToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.blueDASToolStripMenuItem.Text = "BlueDAS";
             // 
             // Debugger
             // 
@@ -769,6 +795,9 @@
         private DisassemblyDisplay disassemblyDisplay1;
         private MemoryDisplay stackDisplay;
         private System.Windows.Forms.Label label18;
+        private System.Windows.Forms.ToolStripMenuItem loadListingToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem organicToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem blueDASToolStripMenuItem;
 
     }
 }
