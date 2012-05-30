@@ -20,7 +20,7 @@ If you wish to use any of this software on Linux or Mac, install Mono first.  It
 
 Lettuce is probably what you want to use.  It looks like this:
 
-![Lettuce](http://i.imgur.com/nybSD.png)
+![Lettuce](http://i.imgur.com/TuwIA.png)
 
 It has lots of useful stuff.  If you start it up without command line arguments, you get this:
 
@@ -37,26 +37,28 @@ this moment).  The ones pictured here are provided by Tomato.  Check any amount 
 see this screen, you can add hardware with -hw, or --connect, or -c from the command line.  If you use the command line,
 you can also connect several of the same device.  When you hit OK, you see this:
 
-![Debugger](http://i.imgur.com/7V8cw.png)
+![Debugger](http://i.imgur.com/TuwIA.png)
 
 For every connected LEM 1802, a window will pop up.  Each window will associate itself with a keyboard as well, if present.
 Any additional keyboards that don't have LEM 1802 devices to associate with will have their own window.  You can focus on
 a window (i.e. click it) and type to send keys to that keyboard.  Right click the LEM1802 window if you want to take a 
 screenshot of it.
 
-Also opened is the debugger window.  If you don't want this running when you start up, use --wait at the command line. On the
-right is the register view, which shows all registers and their current values.  You can also see if interrupt queueing is
-enabled, and how many interrupts are queued, and whether or not the device is on fire.  If you uncheck "Running" and stop the
-CPU, you're free to modify any of these values.  When stopped, Step Into (or F6 on the keyboard) will execute one instruction.
-Step over will execute one instruction, unless it's a JSR instruction, in which case it will execute until it returns, or until
-10000 cycles have passed.
+Also opened is the debugger window.  On the right is the register view, which shows all registers and their current values.
+You can also see if interrupt queueing is enabled, and how many interrupts are queued, and whether or not the device is on fire.
+If you uncheck "Running" and stop the CPU, you're free to modify any of these values.  When stopped, Step Into (or F6 on the
+keyboard) will execute one instruction.  Step over will execute one instruction, unless it's a JSR instruction, in which case
+it will execute until it returns.
 
-Below that is a list of all your connected devices.  Click one to see a little info about it.  Edit Device doesn't work yet, so
-don't try.
+Below that is a list of all your connected devices.  Click one to see a little info about it.  Edit Device will open a window
+with more device information and the ability to edit that information.
 
 To the left is the memory view.  You can scroll through all the memory of the device, and you can edit it if the CPU is stopped.
 Double click a cell to edit it, or right click and select "Edit Value".  Right click and select "Goto Address" to jump to a
 different address in memory, or hit Ctrl+G.
+
+Under that is the disassembler.  Breakpoint lines are highlighted in red, and PC is in yellow.  Double click a line to toggle the
+breakpoint.  If you hover over a value like "C" or "[0x8000]", you'll see the actual runtime value.
 
 Keyboard Shortcuts: F5 to Run/Stop, F6 to Step Into, F7 to Step Over, Ctrl+G to goto address in memory view.
 
