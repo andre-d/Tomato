@@ -10,6 +10,7 @@ using Tomato;
 using Tomato.Hardware;
 using System.Globalization;
 using System.Reflection;
+using System.IO;
 
 namespace Lettuce
 {
@@ -22,6 +23,9 @@ namespace Lettuce
         public Debugger(ref DCPU CPU)
         {
             InitializeComponent();
+            KnownLabels = new Dictionary<ushort, string>();
+            KnownCode = new Dictionary<ushort, string>();
+
             this.KeyPreview = true;
             this.CPU = CPU;
             this.CPU.BreakpointHit += new EventHandler<BreakpointEventArgs>(CPU_BreakpointHit);
@@ -108,6 +112,7 @@ namespace Lettuce
                 checkBoxInterruptQueue.Checked = CPU.InterruptQueueEnabled;
                 checkBoxOnFire.Checked = CPU.IsOnFire;
                 rawMemoryDisplay.Invalidate();
+                disassemblyDisplay1.Invalidate();
                 if (CPU.IsRunning)
                     DisableAll();
                 else
@@ -388,9 +393,52 @@ namespace Lettuce
             MessageBox.Show("No device controller for this kind of device can be found.");
         }
 
+        public static Dictionary<ushort, string> KnownLabels;
+        public static Dictionary<ushort, string> KnownCode;
+
         private void organicToolStripMenuItem_Click(object sender, EventArgs e)
         {
-
+            // Load organic listing
+            OpenFileDialog ofd = new OpenFileDialog();
+            ofd.Filter = "Listing files (*.lst)|*.lst|All files (*.*)|*.*";
+            ofd.FileName = "";
+            if (ofd.ShowDialog() != DialogResult.OK)
+                return;
+            StreamReader reader = new StreamReader(ofd.FileName);
+            string listing = reader.ReadToEnd();
+            reader.Close();
+            string[] lines = listing.Replace("\r", "").Split('\n');
+            foreach (var _line in lines)
+            {
+                string line = _line;
+                if (line.Trim().Length == 0)
+                    continue;
+                line = line.Substring(line.IndexOf(')')).Trim();
+                line = line.Substring(line.IndexOf(' ')).Trim();
+                string addressText = line.Remove(line.IndexOf(']'));
+                addressText = addressText.Substring(line.IndexOf('[') + 3).Trim();
+                ushort address = 0;
+                if (addressText != "NOLIST")
+                    address = ushort.Parse(addressText, NumberStyles.HexNumber);
+                line = line.Substring(line.IndexOf("  ")).Trim();
+                if (line.SafeContains(':'))
+                {
+                    if (line.Contains(' '))
+                        line = line.Remove(line.IndexOf(" ")).Trim();
+                    line = line.Replace(":", "");
+                    if (!KnownLabels.ContainsKey(address))
+                        KnownLabels.Add(address, line);
+                }
+                else
+                {
+                    if (!line.StartsWith(".dat") && !_line.Contains("                      ")) // .dat directive stuff
+                    {
+                        if (!KnownCode.ContainsKey(address))
+                            KnownCode.Add(address, line);
+                    }
+                }
+            }
+            ResetLayout();
         }
     }
 }

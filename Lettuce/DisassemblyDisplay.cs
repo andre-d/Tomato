@@ -134,7 +134,11 @@ namespace Lettuce
 
                 e.Graphics.DrawString(address, this.Font, Brushes.Gray, 2, y);
 
-                e.Graphics.DrawString(Disassembly[index].Code, this.Font, foreground, 2 + TextRenderer.MeasureText(address, this.Font).Width + 3, y);
+                if (!Debugger.KnownCode.ContainsKey(Disassembly[index].Address) || Disassembly[index].IsLabel)
+                    e.Graphics.DrawString(Disassembly[index].Code, this.Font, foreground, 2 + TextRenderer.MeasureText(address, this.Font).Width + 3, y);
+                else
+                    e.Graphics.DrawString(Debugger.KnownCode[Disassembly[index].Address], this.Font, foreground,
+                        2 + TextRenderer.MeasureText(address, this.Font).Width + 3, y);
 
                 if (y + TextRenderer.MeasureText(address, this.Font).Height > this.Height)
                 {
@@ -147,7 +151,7 @@ namespace Lettuce
             if (!setLast)
                 EndAddress = Disassembly[index--].Address;
             index = 0;
-            if (IsMouseWithin && !CPU.IsRunning)
+            if (IsMouseWithin && !CPU.IsRunning) // TODO: Make this more versatile, probably integrate with organic
             {
                 int x = MouseLocation.X;
                 for (int y = 0; y < this.Height; y += TextRenderer.MeasureText("0000", this.Font).Height + 2)

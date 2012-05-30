@@ -10,6 +10,11 @@ namespace Inorganic
     /// </summary>
     public class CodeEntry
     {
+        public CodeEntry()
+        {
+            IsLabel = false;
+        }
+
         public string Code { get; set; }
         public string OpcodeText { get; set; }
         public string ValueAText { get; set; }
@@ -18,6 +23,7 @@ namespace Inorganic
         public byte ValueA { get; set; }
         public byte ValueB { get; set; }
         public ushort Address { get; set; }
+        public bool IsLabel { get; set; }
     }
 
     public enum CodeEntryType

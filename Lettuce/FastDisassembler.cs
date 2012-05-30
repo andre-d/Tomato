@@ -5,6 +5,7 @@ using System.Text;
 using System.IO;
 using System.Reflection;
 using System.Globalization;
+using Lettuce;
 
 namespace Inorganic
 {
@@ -16,9 +17,11 @@ namespace Inorganic
 
         private ushort PC;
         private ushort[] Data;
+        private Dictionary<ushort, string> KnownLabels;
 
         public FastDisassembler()
         {
+            KnownLabels = new Dictionary<ushort,string>(Debugger.KnownLabels);
         }
 
         #endregion
@@ -35,6 +38,17 @@ namespace Inorganic
 
             while (PC != StopAt && PC - 1 != StopAt && PC - 2 != StopAt)
             {
+                if (KnownLabels.ContainsKey(PC))
+                {
+                    output.Add(new CodeEntry()
+                    {
+                        Code = Debugger.KnownLabels[PC] + ":",
+                        IsLabel = true,
+                        Address = PC
+                    });
+                    KnownLabels.Remove(PC);
+                    continue;
+                }
                 ushort instruction = Data[PC++];
                 byte opcode = (byte)(instruction & 0x1F);
                 byte valueB = (byte)((instruction & 0x3E0) >> 5);
