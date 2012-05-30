@@ -57,6 +57,7 @@ namespace Lettuce
                 (sender as DCPU).IsRunning = false;
                 disassemblyDisplay1.EnableUpdates = true;
                 ResetLayout();
+                stepOverEnabled = false;
                 return;
             }
             if (breakpointHandled)
