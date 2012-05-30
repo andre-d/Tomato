@@ -25,6 +25,7 @@ namespace Lettuce
             InitializeComponent();
             this.Font = new Font(FontFamily.GenericMonospace, 8);
             this.MouseMove += new MouseEventHandler(DisassemblyDisplay_MouseMove);
+            this.MouseDoubleClick += new MouseEventHandler(DisassemblyDisplay_MouseDoubleClick);
             EnableUpdates = true;
         }
 
@@ -53,7 +54,24 @@ namespace Lettuce
             this.CPU = CPU;
             this.Font = new Font(FontFamily.GenericMonospace, 8);
             this.MouseMove += new MouseEventHandler(DisassemblyDisplay_MouseMove);
+            this.MouseDoubleClick += new MouseEventHandler(DisassemblyDisplay_MouseDoubleClick);
             EnableUpdates = true;
+        }
+
+        void DisassemblyDisplay_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+            ushort address = SelectedAddress;
+            int offset = e.Y / (TextRenderer.MeasureText("0000", this.Font).Height + 2);
+            while (offset != 0)
+            {
+                address += CPU.InstructionLength(address);
+                offset--;
+            }
+            if (CPU.Breakpoints.Contains(address))
+                CPU.Breakpoints.Remove(address);
+            else
+                CPU.Breakpoints.Add(address);
+            this.Invalidate();
         }
 
         static Color[] PriorToPC;
@@ -82,12 +100,15 @@ namespace Lettuce
                 string address = Debugger.GetHexString(Disassembly[index].Address, 4) + ": ";
                 Brush foreground = Brushes.Black;
 
-                if (Disassembly[index].Address == CPU.PC)
-                    e.Graphics.FillRectangle(Brushes.Yellow, new Rectangle(0, y, this.Width, TextRenderer.MeasureText(address, this.Font).Height + 2));
                 if (CPU.Breakpoints.Contains(Disassembly[index].Address))
                 {
                     e.Graphics.FillRectangle(Brushes.DarkRed, new Rectangle(0, y, this.Width, TextRenderer.MeasureText(address, this.Font).Height + 2));
                     foreground = Brushes.White;
+                }
+                if (Disassembly[index].Address == CPU.PC)
+                {
+                    e.Graphics.FillRectangle(Brushes.Yellow, new Rectangle(0, y + 2, this.Width, TextRenderer.MeasureText(address, this.Font).Height - 2));
+                    foreground = Brushes.Black;
                 }
 
                 e.Graphics.DrawString(address, this.Font, Brushes.Gray, 2, y);
