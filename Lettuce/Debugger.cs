@@ -52,7 +52,7 @@ namespace Lettuce
         {
             if (stepOverEnabled)
             {
-                CPU.Breakpoints.Remove(CPU.PC);
+                CPU.Breakpoints.Remove(CPU.Memory.PC);
                 e.ContinueExecution = false;
                 (sender as DCPU).IsRunning = false;
                 disassemblyDisplay1.EnableUpdates = true;
@@ -99,18 +99,18 @@ namespace Lettuce
                 if (!MayUpdateLayout)
                     return;
                 MayUpdateLayout = false;
-                textBoxRegisterA.Text = GetHexString(CPU.A, 4);
-                textBoxRegisterB.Text = GetHexString(CPU.B, 4);
-                textBoxRegisterC.Text = GetHexString(CPU.C, 4);
-                textBoxRegisterX.Text = GetHexString(CPU.X, 4);
-                textBoxRegisterY.Text = GetHexString(CPU.Y, 4);
-                textBoxRegisterZ.Text = GetHexString(CPU.Z, 4);
-                textBoxRegisterI.Text = GetHexString(CPU.I, 4);
-                textBoxRegisterJ.Text = GetHexString(CPU.J, 4);
-                textBoxRegisterPC.Text = GetHexString(CPU.PC, 4);
-                textBoxRegisterSP.Text = GetHexString(CPU.SP, 4);
-                textBoxRegisterEX.Text = GetHexString(CPU.EX, 4);
-                textBoxRegisterIA.Text = GetHexString(CPU.IA, 4);
+                textBoxRegisterA.Text = GetHexString(CPU.Memory.A, 4);
+                textBoxRegisterB.Text = GetHexString(CPU.Memory.B, 4);
+                textBoxRegisterC.Text = GetHexString(CPU.Memory.C, 4);
+                textBoxRegisterX.Text = GetHexString(CPU.Memory.X, 4);
+                textBoxRegisterY.Text = GetHexString(CPU.Memory.Y, 4);
+                textBoxRegisterZ.Text = GetHexString(CPU.Memory.Z, 4);
+                textBoxRegisterI.Text = GetHexString(CPU.Memory.I, 4);
+                textBoxRegisterJ.Text = GetHexString(CPU.Memory.J, 4);
+                textBoxRegisterPC.Text = GetHexString(CPU.Memory.PC, 4);
+                textBoxRegisterSP.Text = GetHexString(CPU.Memory.SP, 4);
+                textBoxRegisterEX.Text = GetHexString(CPU.Memory.EX, 4);
+                textBoxRegisterIA.Text = GetHexString(CPU.Memory.IA, 4);
                 checkBoxRunning.Checked = CPU.IsRunning;
                 checkBoxInterruptQueue.Checked = CPU.InterruptQueueEnabled;
                 checkBoxOnFire.Checked = CPU.IsOnFire;
@@ -233,65 +233,65 @@ namespace Lettuce
         private void textBoxRegisterA_TextChanged(object sender, EventArgs e)
         {
             if (textBoxRegisterA.Text.Length != 0)
-                CPU.A = ushort.Parse(textBoxRegisterA.Text, NumberStyles.HexNumber);
+                CPU.Memory.A = ushort.Parse(textBoxRegisterA.Text, NumberStyles.HexNumber);
             rawMemoryDisplay.Invalidate();
         }
 
         private void textBoxRegisterB_TextChanged(object sender, EventArgs e)
         {
             if ((sender as TextBox).Text.Length != 0)
-                CPU.B = ushort.Parse((sender as TextBox).Text, NumberStyles.HexNumber);
+                CPU.Memory.B = ushort.Parse((sender as TextBox).Text, NumberStyles.HexNumber);
             rawMemoryDisplay.Invalidate();
         }
 
         private void textBoxRegisterC_TextChanged(object sender, EventArgs e)
         {
             if ((sender as TextBox).Text.Length != 0)
-                CPU.C = ushort.Parse((sender as TextBox).Text, NumberStyles.HexNumber);
+                CPU.Memory.C = ushort.Parse((sender as TextBox).Text, NumberStyles.HexNumber);
             rawMemoryDisplay.Invalidate();
         }
 
         private void textBoxRegisterX_TextChanged(object sender, EventArgs e)
         {
             if ((sender as TextBox).Text.Length != 0)
-                CPU.X = ushort.Parse((sender as TextBox).Text, NumberStyles.HexNumber);
+                CPU.Memory.X = ushort.Parse((sender as TextBox).Text, NumberStyles.HexNumber);
             rawMemoryDisplay.Invalidate();
         }
 
         private void textBoxRegisterY_TextChanged(object sender, EventArgs e)
         {
             if ((sender as TextBox).Text.Length != 0)
-                CPU.Y = ushort.Parse((sender as TextBox).Text, NumberStyles.HexNumber);
+                CPU.Memory.Y = ushort.Parse((sender as TextBox).Text, NumberStyles.HexNumber);
             rawMemoryDisplay.Invalidate();
         }
 
         private void textBoxRegisterZ_TextChanged(object sender, EventArgs e)
         {
             if ((sender as TextBox).Text.Length != 0)
-                CPU.Z = ushort.Parse((sender as TextBox).Text, NumberStyles.HexNumber);
+                CPU.Memory.Z = ushort.Parse((sender as TextBox).Text, NumberStyles.HexNumber);
             rawMemoryDisplay.Invalidate();
         }
 
         private void textBoxRegisterI_TextChanged(object sender, EventArgs e)
         {
             if ((sender as TextBox).Text.Length != 0)
-                CPU.I = ushort.Parse((sender as TextBox).Text, NumberStyles.HexNumber);
+                CPU.Memory.I = ushort.Parse((sender as TextBox).Text, NumberStyles.HexNumber);
             rawMemoryDisplay.Invalidate();
         }
 
         private void textBoxRegisterJ_TextChanged(object sender, EventArgs e)
         {
             if ((sender as TextBox).Text.Length != 0)
-                CPU.J = ushort.Parse((sender as TextBox).Text, NumberStyles.HexNumber);
+                CPU.Memory.J = ushort.Parse((sender as TextBox).Text, NumberStyles.HexNumber);
             rawMemoryDisplay.Invalidate();
         }
 
         private void textBoxRegisterPC_TextChanged(object sender, EventArgs e)
         {
             if ((sender as TextBox).Text.Length != 0)
-                CPU.PC = ushort.Parse((sender as TextBox).Text, NumberStyles.HexNumber);
-            if (!(disassemblyDisplay1.SelectedAddress < CPU.PC && disassemblyDisplay1.EndAddress > CPU.PC) && disassemblyDisplay1.EnableUpdates)
-                disassemblyDisplay1.SelectedAddress = CPU.PC;
+                CPU.Memory.PC = ushort.Parse((sender as TextBox).Text, NumberStyles.HexNumber);
+            if (!(disassemblyDisplay1.SelectedAddress < CPU.Memory.PC && disassemblyDisplay1.EndAddress > CPU.Memory.PC) && disassemblyDisplay1.EnableUpdates)
+                disassemblyDisplay1.SelectedAddress = CPU.Memory.PC;
             rawMemoryDisplay.Invalidate();
             disassemblyDisplay1.Invalidate();
         }
@@ -299,23 +299,23 @@ namespace Lettuce
         private void textBoxRegisterEX_TextChanged(object sender, EventArgs e)
         {
             if ((sender as TextBox).Text.Length != 0)
-                CPU.EX = ushort.Parse((sender as TextBox).Text, NumberStyles.HexNumber);
+                CPU.Memory.EX = ushort.Parse((sender as TextBox).Text, NumberStyles.HexNumber);
             rawMemoryDisplay.Invalidate();
         }
 
         private void textBoxRegisterSP_TextChanged(object sender, EventArgs e)
         {
             if ((sender as TextBox).Text.Length != 0)
-                CPU.SP = ushort.Parse((sender as TextBox).Text, NumberStyles.HexNumber);
+                CPU.Memory.SP = ushort.Parse((sender as TextBox).Text, NumberStyles.HexNumber);
             rawMemoryDisplay.Invalidate();
-            stackDisplay.SelectedAddress = CPU.SP;
+            stackDisplay.SelectedAddress = CPU.Memory.SP;
             stackDisplay.Invalidate();
         }
 
         private void textBoxRegisterIA_TextChanged(object sender, EventArgs e)
         {
             if ((sender as TextBox).Text.Length != 0)
-                CPU.IA = ushort.Parse((sender as TextBox).Text, NumberStyles.HexNumber);
+                CPU.Memory.IA = ushort.Parse((sender as TextBox).Text, NumberStyles.HexNumber);
             rawMemoryDisplay.Invalidate();
         }
 
@@ -324,9 +324,9 @@ namespace Lettuce
         private void buttonStepOver_Click(object sender, EventArgs e)
         {
             // Set a breakpoint ahead of PC
-            ushort length = CPU.InstructionLength(CPU.PC);
-            CPU.Breakpoints.Add((ushort)(CPU.PC + length));
-            stepOverAddress = (ushort)(CPU.PC + length);
+            ushort length = CPU.InstructionLength(CPU.Memory.PC);
+            CPU.Breakpoints.Add((ushort)(CPU.Memory.PC + length));
+            stepOverAddress = (ushort)(CPU.Memory.PC + length);
             stepOverEnabled = true;
             disassemblyDisplay1.EnableUpdates = false;
             checkBoxRunning.Checked = !checkBoxRunning.Checked; // Run the CPU
@@ -366,7 +366,7 @@ namespace Lettuce
 
         private void resetToolStripMenuItem1_Click(object sender, EventArgs e)
         {
-            CPU.Memory = new ushort[0x10000];
+            CPU.Memory = new DCPUMemory();
             ResetLayout();
         }
 

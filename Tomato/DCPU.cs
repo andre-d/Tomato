@@ -8,34 +8,22 @@ namespace Tomato
 {
     public partial class DCPU
     {
-        public DCPU()
-        {
-            ConnectedDevices = new List<Device>();
-            Breakpoints = new List<ushort>();
-            InterruptQueue = new Queue<ushort>();
-            Memory = new ushort[0x10000];
-            InterruptQueueEnabled = IsOnFire = false;
-            IsRunning = true;
-            if (Random == null)
-                Random = new Random();
-        }
+        private static int[] OPCODE_COST = new int[] {
+            0,1,2,2,2,2,3,3,3,3,1,1,1,1,1,1,2,2,2,2,2,2,2,2,0,0,3,3,0,0,2,2
+        };
+        private static int[] BOPCODE_COST = new int [] {
+            0,3,0,0,0,0,0,0,4,1,1,3,2,0,0,0,2,4,4,0,0,0,0,0,0,0,0,0,0,0,0,0
+        };
+        private static int[] FIELD_COST = new int[] {
+            0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,0,0,1,0,0,0,1,1
+        };
 
         public List<Device> ConnectedDevices;
         public List<ushort> Breakpoints;
         public Queue<ushort> InterruptQueue;
         public bool InterruptQueueEnabled, IsOnFire;
-        public ushort[] Memory;
-        public ushort PC, SP, EX, IA, A, B, C, X, Y, Z, I, J;
-        public ushort[] Registers
-        {
-            get
-            {
-                return new ushort[]
-                {
-                    A, B, C, X, Y, Z, I, J, PC, SP, EX, IA
-                };
-            }
-        }
+        public DCPUMemory Memory;
+
         public int ClockSpeed = 100000;
         public bool IsRunning;
         /// <summary>
@@ -45,6 +33,18 @@ namespace Tomato
 
         private static Random Random;
         private int cycles = 0;
+
+        public DCPU()
+        {
+            ConnectedDevices = new List<Device>();
+            Breakpoints = new List<ushort>();
+            InterruptQueue = new Queue<ushort>();
+            Memory = new DCPUMemory();
+            InterruptQueueEnabled = IsOnFire = false;
+            IsRunning = true;
+            if (Random == null)
+                Random = new Random();
+        }
 
         public ushort InstructionLength(ushort address)
         {
@@ -63,6 +63,22 @@ namespace Tomato
             return length;
         }
 
+        public int InstructionCost(int instruction)
+        {
+            int opcode = instruction & 0x1F;
+            int valueB = (instruction & 0x3E0) >> 5;
+            int valueA = (instruction & 0xFC00) >> 10;
+
+            if (opcode == 0)
+            {
+                return BOPCODE_COST[valueB] + FIELD_COST[valueA];
+            }
+            else
+            {
+                return OPCODE_COST[opcode] + BOPCODE_COST[valueB] + FIELD_COST[valueA];
+            }
+        }
+
         public void Execute(int CyclesToExecute)
         {
             if (!IsRunning && CyclesToExecute != -1)
@@ -75,7 +91,7 @@ namespace Tomato
             while (cycles > 0)
             {
                 if (BreakpointHit != null)
-                    if (Breakpoints.Contains(PC))
+                    if (Breakpoints.Contains(Memory.PC))
                     {
                         BreakpointEventArgs bea = new BreakpointEventArgs();
                         BreakpointHit(this, bea);
@@ -87,232 +103,202 @@ namespace Tomato
                 if (!InterruptQueueEnabled && InterruptQueue.Count > 0)
                     FireInterrupt(InterruptQueue.Dequeue());
 
-                ushort instruction = Memory[PC++];
+                ushort instruction = Memory[Memory.PC++];
                 byte opcode = (byte)(instruction & 0x1F);
                 byte valueB = (byte)((instruction & 0x3E0) >> 5);
                 byte valueA = (byte)((instruction & 0xFC00) >> 10);
-                ushort result, opA = 0, opB = 0;
-                opA = Get(valueA);
-                if (opcode != 0)
-                {
-                    ushort pc_old = PC, sp_old = SP;
-                    opB = Get(valueB);
-                    PC = pc_old;
-                    SP = sp_old;
-                }
+                ushort opA = 0, opB = 0;
+                int ea_a = -1, ea_b = -1;
+
+                cycles -= InstructionCost(instruction);
+
+                opA = Get(true, valueA, ref ea_a);
                 short opB_s = (short)opB;
                 short opA_s = (short)opA;
-                cycles--;
+
+                if (opcode != 0) {
+                    opB = Get(false, valueB, ref ea_b);
+                }
+
                 switch (opcode)
                 {
                     case 0x00: // (nonbasic)
                         switch (valueB)
                         {
                             case 0x01: // JSR a
-                                cycles -= 2;
-                                Memory[--SP] = PC;
-                                PC = opA;
+                                Memory[--Memory.SP] = Memory.PC;
+                                Memory.PC = opA;
                                 break;
                             case 0x08: // INT a
-                                cycles -= 3;
                                 InterruptQueueEnabled = false;
                                 FireInterrupt(opA);
                                 break;
                             case 0x09: // IAG a
-                                Set(valueA, IA);
+                                Set(ea_a, Memory.IA);
                                 break;
                             case 0x0A: // IAS a
-                                IA = opA;
+                                Memory.IA = opA;
                                 break;
                             case 0x0B: // RFI a
-                                A = Memory[SP++];
-                                PC = Memory[SP++];
+                                Memory.A = Memory[Memory.SP++];
+                                Memory.PC = Memory[Memory.SP++];
                                 InterruptQueueEnabled = false;
                                 break;
                             case 0x10: // HWN a
-                                cycles--;
-                                Set(valueA, (ushort)ConnectedDevices.Count);
+                                Set(ea_a, (ushort)ConnectedDevices.Count);
                                 break;
                             case 0x11: // HWQ a
-                                cycles -= 3;
                                 if (opA < ConnectedDevices.Count)
                                 {
                                     Device d = ConnectedDevices[opA];
-                                    A = (ushort)(d.DeviceID & 0xFFFF);
-                                    B = (ushort)((d.DeviceID & 0xFFFF0000) >> 16);
-                                    C = d.Version;
-                                    X = (ushort)(d.ManufacturerID & 0xFFFF);
-                                    Y = (ushort)((d.ManufacturerID & 0xFFFF0000) >> 16);
+                                    Memory.A = (ushort)(d.DeviceID & 0xFFFF);
+                                    Memory.B = (ushort)((d.DeviceID & 0xFFFF0000) >> 16);
+                                    Memory.C = d.Version;
+                                    Memory.X = (ushort)(d.ManufacturerID & 0xFFFF);
+                                    Memory.Y = (ushort)((d.ManufacturerID & 0xFFFF0000) >> 16);
                                 }
                                 break;
                             case 0x12: // HWI a
-                                cycles -= 3;
                                 if (opA < ConnectedDevices.Count)
                                     cycles -= ConnectedDevices[opA].HandleInterrupt();
                                 break;
                         }
                         break;
                     case 0x01: // SET b, a
-                        Set(valueB, opA);
+                        Set(ea_b, opA);
                         break;
                     case 0x02: // ADD b, a
-                        cycles--;
                         if (opB + opA > 0xFFFF)
-                            EX = 0x0001;
+                            Memory.EX = 0x0001;
                         else
-                            EX = 0;
-                        Set(valueB, (ushort)(opB + opA));
+                            Memory.EX = 0;
+                        Set(ea_b, (ushort)(opB + opA));
                         break;
                     case 0x03: // SUB b, a
-                        cycles--;
                         if (opB - opA < 0)
-                            EX = 0xFFFF;
+                            Memory.EX = 0xFFFF;
                         else
-                            EX = 0;
-                        Set(valueB, (ushort)(opB - opA));
+                            Memory.EX = 0;
+                        Set(ea_b, (ushort)(opB - opA));
                         break;
                     case 0x04: // MUL b, a
-                        cycles--;
-                        EX = (ushort)(((opB * opA) >> 16) & 0xffff);
-                        Set(valueB, (ushort)(opB * opA));
+                        Memory.EX = (ushort)(((opB * opA) >> 16) & 0xffff);
+                        Set(ea_b, (ushort)(opB * opA));
                         break;
                     case 0x05: // MLI b, a
-                        cycles--;
-                        EX = (ushort)(((opB_s * opA_s) >> 16) & 0xffff);
-                        Set(valueB, (ushort)(opB_s * opA_s));
+                        Memory.EX = (ushort)(((opB_s * opA_s) >> 16) & 0xffff);
+                        Set(ea_b, (ushort)(opB_s * opA_s));
                         break;
                     case 0x06: // DIV b, a
-                        cycles -= 2;
                         if (opA == 0)
                         {
-                            EX = 0;
-                            Set(valueB, 0);
+                            Memory.EX = 0;
+                            Set(ea_b, 0);
                         }
                         else
                         {
-                            EX = (ushort)(((opB << 16) / opA) & 0xffff);
-                            Set(valueB, (ushort)(opB / opA));
+                            Memory.EX = (ushort)(((opB << 16) / opA) & 0xffff);
+                            Set(ea_b, (ushort)(opB / opA));
                         }
                         break;
                     case 0x07: // DVI b, a
-                        cycles -= 2;
                         if (opA_s == 0)
                         {
-                            EX = 0;
-                            Set(valueB, 0);
+                            Memory.EX = 0;
+                            Set(ea_b, 0);
                         }
                         else
                         {
-                            EX = (ushort)(((opB_s << 16) / opA_s) & 0xffff);
-                            Set(valueB, (ushort)(opB_s / opA_s));
+                            Memory.EX = (ushort)(((opB_s << 16) / opA_s) & 0xffff);
+                            Set(ea_b, (ushort)(opB_s / opA_s));
                         }
                         break;
                     case 0x08: // MOD b, a
-                        cycles -= 2;
                         if (opA == 0)
-                            Set(valueB, 0);
+                            Set(ea_b, 0);
                         else
-                            Set(valueB, (ushort)(opB % opA));
+                            Set(ea_b, (ushort)(opB % opA));
                         break;
                     case 0x09: // MDI b, a
-                        cycles -= 2;
                         if (opA_s == 0)
-                            Set(valueB, 0);
+                            Set(ea_b, 0);
                         else
-                            Set(valueB, (ushort)(opB_s % opA_s));
+                            Set(ea_b, (ushort)(opB_s % opA_s));
                         break;
                     case 0x0A: // AND b, a
-                        Set(valueB, (ushort)(opB & opA));
+                        Set(ea_b, (ushort)(opB & opA));
                         break;
                     case 0x0B: // BOR b, a
-                        Set(valueB, (ushort)(opB | opA));
+                        Set(ea_b, (ushort)(opB | opA));
                         break;
                     case 0x0C: // XOR b, a
-                        Set(valueB, (ushort)(opB ^ opA));
+                        Set(ea_b, (ushort)(opB ^ opA));
                         break;
                     case 0x0D: // SHR b, a
-                        EX = (ushort)(((opB << 16) >> opA) & 0xffff);
-                        Set(valueB, (ushort)(opB >> opA));
+                        Memory.EX = (ushort)(((opB << 16) >> opA) & 0xffff);
+                        Set(ea_b, (ushort)(opB >> opA));
                         break;
                     case 0x0E: // ASR b, a
-                        EX = (ushort)(((opB_s << 16) >> opA) & 0xffff);
-                        Set(valueB, (ushort)(opB_s >> opA));
+                        Memory.EX = (ushort)(((opB_s << 16) >> opA) & 0xffff);
+                        Set(ea_b, (ushort)(opB_s >> opA));
                         break;
                     case 0x0F: // SHL b, a
-                        EX = (ushort)(((opB << opA) >> 16) & 0xffff);
-                        Set(valueB, (ushort)(opB << opA));
+                        Memory.EX = (ushort)(((opB << opA) >> 16) & 0xffff);
+                        Set(ea_b, (ushort)(opB << opA));
                         break;
                     case 0x10: // IFB b, a
-                        cycles -= 2;
-                        Get(valueB);
                         if (!((ushort)(opB & opA) != 0))
                             SkipIfChain();
                         break;
                     case 0x11: // IFC b, a
-                        cycles -= 2;
-                        Get(valueB);
                         if (!((ushort)(opB & opA) == 0))
                             SkipIfChain();
                         break;
                     case 0x12: // IFE b, a
-                        cycles -= 2;
-                        Get(valueB);
                         if (!(opB == opA))
                             SkipIfChain();
                         break;
                     case 0x13: // IFN b, a
-                        cycles -= 2;
-                        Get(valueB);
                         if (!(opB != opA))
                             SkipIfChain();
                         break;
                     case 0x14: // IFG b, a
-                        cycles -= 2;
-                        Get(valueB);
                         if (!(opB > opA))
                             SkipIfChain();
                         break;
                     case 0x15: // IFA b, a
-                        cycles -= 2;
-                        Get(valueB);
                         if (!(opB_s > opA_s))
                             SkipIfChain();
                         break;
                     case 0x16: // IFL b, a
-                        cycles -= 2;
-                        Get(valueB);
                         if (!(opB < opA))
                             SkipIfChain();
                         break;
                     case 0x17: // IFU b, a
-                        cycles += 2;
-                        Get(valueB);
                         if (!(opB_s < opA_s))
                             SkipIfChain();
                         break;
                     case 0x1A: // ADX b, a
-                        cycles -= 2;
-                        uint resADX = (uint)(opB + opA + (short)EX);
-                        EX = (ushort)((resADX >> 16) & 0xFFFF);
-                        Set(valueB, (ushort)resADX);
+                        uint resADX = (uint)(opB + opA + (short)Memory.EX);
+                        Memory.EX = (ushort)((resADX >> 16) & 0xFFFF);
+                        Set(ea_b, (ushort)resADX);
                         break;
                     case 0x1B: // SBX b, a
-                        cycles -= 2;
-                        uint resSBX = (uint)(opB - opA + (short)EX);
-                        EX = (ushort)((resSBX >> 16) & 0xFFFF);
-                        Set(valueB, (ushort)resSBX);
+                        uint resSBX = (uint)(opB - opA + (short)Memory.EX);
+                        Memory.EX = (ushort)((resSBX >> 16) & 0xFFFF);
+                        Set(ea_b, (ushort)resSBX);
                         break;
                     case 0x1E: // STI b, a
                         cycles--;
-                        Set(valueB, opA);
-                        I++;
-                        J++;
+                        Set(ea_b, opA);
+                        Memory.I++;
+                        Memory.J++;
                         break;
                     case 0x1F: // STD b, a
                         cycles--;
-                        Set(valueB, opA);
-                        I--;
-                        J--;
+                        Set(ea_b, opA);
+                        Memory.I--;
+                        Memory.J--;
                         break;
                     default:
                         // According to spec, should take zero cycles
@@ -326,18 +312,11 @@ namespace Tomato
 
         private void SkipIfChain()
         {
-            byte opcode;
+            int opcode;
             do
             {
-                cycles--;
-                ushort instruction = Memory[PC++];
-                opcode = (byte)(instruction & 0x1F);
-                byte valueB = (byte)((instruction & 0x3E0) >> 5);
-                byte valueA = (byte)((instruction & 0xFC00) >> 10);
-                ushort SP_old = SP;
-                Get(valueA);
-                Get(valueB);
-                SP = SP_old;
+                opcode = Memory[Memory.PC] & 0x1F;
+                Memory.PC += InstructionLength(Memory.PC);
             } while (opcode >= 0x10 && opcode <= 0x17);
         }
 
@@ -351,12 +330,12 @@ namespace Tomato
             }
             else
             {
-                if (IA != 0)
+                if (Memory.IA != 0)
                 {
-                    Memory[--SP] = PC;
-                    Memory[--SP] = A;
-                    PC = IA;
-                    A = Message;
+                    Memory[--Memory.SP] = Memory.PC;
+                    Memory[--Memory.SP] = Memory.A;
+                    Memory.PC = Memory.IA;
+                    Memory.A = Message;
                     InterruptQueueEnabled = true;
                 }
             }
@@ -368,195 +347,64 @@ namespace Tomato
             ConnectedDevices.Add(Device);
         }
 
-        public void FlashMemory(ushort[] Data)
-        {
-            Array.Copy(Data, Memory, Data.Length);
-        }
-
         #region Get/Set
 
-        public void Set(byte destination, ushort value)
+        public void Set(int ea, ushort value)
         {
-            switch (destination)
-            {
-                case 0x00:
-                    A = value;
-                    break;
-                case 0x01:
-                    B = value;
-                    break;
-                case 0x02:
-                    C = value;
-                    break;
-                case 0x03:
-                    X = value;
-                    break;
-                case 0x04:
-                    Y = value;
-                    break;
-                case 0x05:
-                    Z = value;
-                    break;
-                case 0x06:
-                    I = value;
-                    break;
-                case 0x07:
-                    J = value;
-                    break;
-                case 0x08:
-                    Memory[A] = value;
-                    break;
-                case 0x09:
-                    Memory[B] = value;
-                    break;
-                case 0x0A:
-                    Memory[C] = value;
-                    break;
-                case 0x0B:
-                    Memory[X] = value;
-                    break;
-                case 0x0C:
-                    Memory[Y] = value;
-                    break;
-                case 0x0D:
-                    Memory[Z] = value;
-                    break;
-                case 0x0E:
-                    Memory[I] = value;
-                    break;
-                case 0x0F:
-                    Memory[J] = value;
-                    break;
-                case 0x10:
-                    cycles--;
-                    Memory[(ushort)(A + Memory[PC++])] = value;
-                    break;
-                case 0x11:
-                    cycles--;
-                    Memory[(ushort)(B + Memory[PC++])] = value;
-                    break;
-                case 0x12:
-                    cycles--;
-                    Memory[(ushort)(C + Memory[PC++])] = value;
-                    break;
-                case 0x13:
-                    cycles--;
-                    Memory[(ushort)(X + Memory[PC++])] = value;
-                    break;
-                case 0x14:
-                    cycles--;
-                    Memory[(ushort)(Y + Memory[PC++])] = value;
-                    break;
-                case 0x15:
-                    cycles--;
-                    Memory[(ushort)(Z + Memory[PC++])] = value;
-                    break;
-                case 0x16:
-                    cycles--;
-                    Memory[(ushort)(I + Memory[PC++])] = value;
-                    break;
-                case 0x17:
-                    cycles--;
-                    Memory[(ushort)(J + Memory[PC++])] = value;
-                    break;
-                case 0x18:
-                    Memory[--SP] = value;
-                    break;
-                case 0x19:
-                    Memory[SP] = value;
-                    break;
-                case 0x1A:
-                    cycles--;
-                    Memory[(ushort)(SP + Memory[PC++])] = value;
-                    break;
-                case 0x1B:
-                    SP = value;
-                    break;
-                case 0x1C:
-                    PC = value;
-                    break;
-                case 0x1D:
-                    EX = value;
-                    break;
-                case 0x1E:
-                    cycles--;
-                    Memory[Memory[PC++]] = value;
-                    break;
-                case 0x1F:
-                    cycles--;
-                    PC++;
-                    break;
-            }
+            if (ea >= 0)
+                Memory[ea] = value;
         }
 
-        public ushort Get(byte target)
+        public ushort Get(bool field_a, byte target, ref int ea)
         {
             switch (target)
             {
-                case 0x00:
-                    return A;
-                case 0x01:
-                    return B;
-                case 0x02:
-                    return C;
-                case 0x03:
-                    return X;
-                case 0x04:
-                    return Y;
-                case 0x05:
-                    return Z;
-                case 0x06:
-                    return I;
-                case 0x07:
-                    return J;
-                case 0x08:
-                case 0x09:
-                case 0x0A:
-                case 0x0B:
-                case 0x0C:
-                case 0x0D:
-                case 0x0E:
-                case 0x0F:
-                    return Memory[(ushort)(Get((byte)(target - 0x08)))];
-                case 0x10:
-                case 0x11:
-                case 0x12:
-                case 0x13:
-                case 0x14:
-                case 0x15:
-                case 0x16:
-                case 0x17:
+                case 0x00: case 0x01: case 0x02: case 0x03: 
+                case 0x04: case 0x05: case 0x06: case 0x07:
+                    ea = 0x10000 + target;
+                    break;
+                case 0x08: case 0x09: case 0x0A: case 0x0B:
+                case 0x0C: case 0x0D: case 0x0E: case 0x0F:
+                    ea = Memory[0x10000 - 8 + target];
+                    break;
+                case 0x10: case 0x11: case 0x12: case 0x13:
+                case 0x14: case 0x15: case 0x16: case 0x17:
+                    ea = (Memory[0x10000 - 16 + target] + Memory[Memory.PC++]) & 0xFFFF;
                     cycles--;
-                    return Memory[(ushort)(Get((byte)(target - 0x10)) + Memory[PC++])];
+                    break ;
                 case 0x18:
-                    return Memory[SP++];
+                    ea = field_a ? Memory.SP++ : --Memory.SP;
+                    break;
                 case 0x19:
-                    return Memory[SP];
+                    ea = Memory.SP;
+                    break ;
                 case 0x1A:
+                    ea = (Memory.SP + Memory[Memory.PC++]) & 0xFFFF;
                     cycles--;
-                    return Memory[(ushort)(SP + Memory[PC++])];
-                case 0x1B:
-                    return SP;
-                case 0x1C:
-                    return PC;
-                case 0x1D:
-                    return EX;
+                    break;
+                case 0x1B: case 0x1C: case 0x1D:
+                    ea = 0x10008 - 0x1B + target;
+                    break ;
                 case 0x1E:
+                    ea = Memory[Memory.PC++];
                     cycles--;
-                    return Memory[Memory[PC++]];
+                    break;
                 case 0x1F:
+                    ea = Memory.PC++;
                     cycles--;
-                    return Memory[PC++];
+                    break;
                 default:
+                    ea = -1;
                     return (ushort)(target - 0x21);
             }
+            return Memory[ea];
         }
 
         #endregion
 
         public void Reset()
         {
-            A = B = C = X = Y = Z = I = J = PC = EX = IA = SP = 0;
+            Memory.Reset();
 
             foreach (var device in ConnectedDevices)
                 device.Reset();
