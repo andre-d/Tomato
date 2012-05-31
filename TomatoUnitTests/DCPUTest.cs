@@ -97,27 +97,27 @@ SET A, POP
 end:
 SUB PC, 1"
                 );
-            target.FlashMemory(GetOutput(assemblyOutput));
+            target.Memory.Flash(GetOutput(assemblyOutput));
             target.Execute(100);
             // Test registers
-            Assert.AreEqual(0x1001, target.B);
-            Assert.AreEqual(0x1002, target.C);
-            Assert.AreEqual(0x1003, target.X);
-            Assert.AreEqual(0x1004, target.Y);
-            Assert.AreEqual(0x1005, target.Z);
-            Assert.AreEqual(0x1006, target.I);
-            Assert.AreEqual(0x1007, target.J);
+            Assert.AreEqual(0x1001, target.Memory.B);
+            Assert.AreEqual(0x1002, target.Memory.C);
+            Assert.AreEqual(0x1003, target.Memory.X);
+            Assert.AreEqual(0x1004, target.Memory.Y);
+            Assert.AreEqual(0x1005, target.Memory.Z);
+            Assert.AreEqual(0x1006, target.Memory.I);
+            Assert.AreEqual(0x1007, target.Memory.J);
             // Test Stack
-            Assert.AreEqual(0xFFFF, target.SP);
-            Assert.AreEqual(20, target.A);
+            Assert.AreEqual(0xFFFF, target.Memory.SP);
+            Assert.AreEqual(20, target.Memory.A);
             Assert.AreEqual(10, target.Memory[0xFFFF]);
             Assert.AreEqual(20, target.Memory[0xFFFE]);
             // Test memory
             Assert.AreEqual(target.Memory[0x1000], 10);
-            Assert.AreEqual(target.Memory[0x1001], target.B);
+            Assert.AreEqual(target.Memory[0x1001], target.Memory.B);
             Assert.AreEqual(target.Memory[0x1002], target.Memory[0x1000]);
 
-            Assert.AreEqual(assembler.LabelValues.GetValue("end"), target.PC);
+            Assert.AreEqual(assembler.LabelValues.GetValue("end"), target.Memory.PC);
         }
 
         [TestMethod()]
@@ -126,11 +126,11 @@ SUB PC, 1"
             DCPU target = new DCPU();
             Assembler assembler = new Assembler();
             List<ListEntry> assemblyOutput = assembler.Assemble("SET A, 10\nADD A, 10\nSET B, 0xFFF8\nADD B, 10");
-            target.FlashMemory(GetOutput(assemblyOutput));
+            target.Memory.Flash(GetOutput(assemblyOutput));
             target.Execute(100);
-            Assert.AreEqual(20, target.A);
-            Assert.AreEqual(2, target.B);
-            Assert.AreEqual(0xFFFF, target.EX);
+            Assert.AreEqual(20, target.Memory.A);
+            Assert.AreEqual(2, target.Memory.B);
+            Assert.AreEqual(0xFFFF, target.Memory.EX);
         }
 
         [TestMethod()]
@@ -139,9 +139,9 @@ SUB PC, 1"
             DCPU target = new DCPU();
             Assembler assembler = new Assembler();
             List<ListEntry> assemblyOutput = assembler.Assemble("SET A, 10\nSUB A, 5");
-            target.FlashMemory(GetOutput(assemblyOutput));
+            target.Memory.Flash(GetOutput(assemblyOutput));
             target.Execute(1);
-            Assert.AreEqual(10, target.A);
+            Assert.AreEqual(10, target.Memory.A);
         }
 
         [TestMethod]
@@ -150,8 +150,8 @@ SUB PC, 1"
             DCPU cpu = new DCPU();
             LEM1802 lem = new LEM1802();
             cpu.ConnectDevice(lem);
-            cpu.A = 0;
-            cpu.B = 0x8000;
+            cpu.Memory.A = 0;
+            cpu.Memory.B = 0x8000;
             lem.HandleInterrupt();
             string test = "Hello, world!";
             for (int i = 0; i < test.Length; i++)
@@ -176,9 +176,9 @@ IFE [X+1],[X+2]
         SET A, 20
 SUB PC, 1
 ");
-            target.FlashMemory(GetOutput(assemblyOutput));
+            target.Memory.Flash(GetOutput(assemblyOutput));
             target.Execute(100);
-            Assert.AreEqual(10, target.A);
+            Assert.AreEqual(10, target.Memory.A);
         }
 
         [TestMethod]
@@ -201,10 +201,10 @@ subroutine:
 SET A, 20
 SET PC, POP"
                 );
-            target.FlashMemory(GetOutput(assemblyOutput));
+            target.Memory.Flash(GetOutput(assemblyOutput));
             target.Execute(100);
-            Assert.AreEqual(20, target.A);
-            Assert.AreEqual(10, target.B);
+            Assert.AreEqual(20, target.Memory.A);
+            Assert.AreEqual(10, target.Memory.B);
         }
 
         [TestMethod]
@@ -225,9 +225,9 @@ SET B, [A]
 data:
     .dw 100"
                 );
-            target.FlashMemory(GetOutput(assemblyOutput));
+            target.Memory.Flash(GetOutput(assemblyOutput));
             target.Execute(100);
-            Assert.AreEqual(target.B, 100);
+            Assert.AreEqual(target.Memory.B, 100);
         }
 
         [TestMethod]
@@ -290,7 +290,7 @@ str_loop:
 msg:
     .dw 'H', 'e', 'l', 'l', 'o', ' ', 'w', 'o', 'r', 'l', 'd', '!', 0"
                 );
-            target.FlashMemory(GetOutput(assemblyOutput));
+            target.Memory.Flash(GetOutput(assemblyOutput));
             target.Execute(1000);
             Assert.AreEqual(screen.ScreenMap, 0x8000);
             screen.ScreenImage.Save("screen.bmp");
