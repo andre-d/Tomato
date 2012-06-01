@@ -464,5 +464,33 @@ namespace Lettuce
             if (!KnownLabels.ContainsKey(dvf.Value))
                 KnownLabels.Add(dvf.Value, dvf.Name);
         }
+
+        private void toolStripMenuItem2_Click(object sender, EventArgs e)
+        {
+            CPU.ClockSpeed = 50000;
+        }
+
+        private void toolStripMenuItem3_Click(object sender, EventArgs e)
+        {
+            CPU.ClockSpeed = 100000;
+        }
+
+        private void toolStripMenuItem4_Click(object sender, EventArgs e)
+        {
+            CPU.ClockSpeed = 200000;
+        }
+
+        private void toolStripMenuItem5_Click(object sender, EventArgs e)
+        {
+            CPU.ClockSpeed = 1000000;
+        }
+
+        private void customToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ClockSpeedForm csf = new ClockSpeedForm();
+            csf.Value = CPU.ClockSpeed;
+            csf.ShowDialog();
+            CPU.ClockSpeed = csf.Value;
+        }
     }
 }

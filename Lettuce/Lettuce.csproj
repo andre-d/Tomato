@@ -49,6 +49,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ClockSpeedForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ClockSpeedForm.Designer.cs">
+      <DependentUpon>ClockSpeedForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="CodeEntry.cs" />
     <Compile Include="Debugger.cs">
       <SubType>Form</SubType>
@@ -111,6 +117,9 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="ClockSpeedForm.resx">
+      <DependentUpon>ClockSpeedForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Debugger.resx">
       <DependentUpon>Debugger.cs</DependentUpon>
     </EmbeddedResource>

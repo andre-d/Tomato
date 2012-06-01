@@ -54,6 +54,7 @@ namespace Lettuce
                     switch (arg)
                     {
                         case "--no-wait":
+                        case "--nowait":
                             CPU.IsRunning = true;
                             break;
                         case "-c":
@@ -87,10 +88,7 @@ namespace Lettuce
                     if (binFile == null)
                         binFile = arg;
                     else
-                    {
-                        Console.WriteLine("Invalid parameter: " + arg);
-                        return;
-                    }
+                        Debugger.LoadOrganicListing(args[i]);
                 }
             }
             if (binFile == null)
