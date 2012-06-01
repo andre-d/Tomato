@@ -118,25 +118,25 @@ namespace Tomato.Hardware
 
         public override int HandleInterrupt()
         {
-            switch (AttachedCPU.Memory.A)
+            switch (AttachedCPU.A)
             {
                 case 0x00:
-                    ScreenMap = AttachedCPU.Memory.B;
+                    ScreenMap = AttachedCPU.B;
                     break;
                 case 0x01:
-                    FontMap = AttachedCPU.Memory.B;
+                    FontMap = AttachedCPU.B;
                     break;
                 case 0x02:
-                    PaletteMap = AttachedCPU.Memory.B;
+                    PaletteMap = AttachedCPU.B;
                     break;
                 case 0x03:
-                    BorderColorValue = (ushort)(AttachedCPU.Memory.B & 0xF);
+                    BorderColorValue = (ushort)(AttachedCPU.B & 0xF);
                     break;
                 case 0x04:
-                    AttachedCPU.Memory.Flash(DefaultFont, AttachedCPU.Memory.B);
+                    Array.Copy(DefaultFont, 0, AttachedCPU.Memory, AttachedCPU.B, DefaultFont.Length);
                     return 256;
                 case 0x05:
-                    AttachedCPU.Memory.Flash(DefaultPalette, AttachedCPU.Memory.B);
+                    Array.Copy(DefaultPalette, 0, AttachedCPU.Memory, AttachedCPU.B, DefaultPalette.Length);
                     return 16;
             }
             return 0;

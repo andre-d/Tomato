@@ -30,7 +30,7 @@ namespace Inorganic
         /// Disassembles a small snippet of data without finding labels.
         /// </summary>
         /// <param name="Data"></param>
-        public List<CodeEntry> FastDisassemble(ushort[] Data, ushort PCStart, ushort StopAt)
+        public List<CodeEntry> FastDisassemble(ref ushort[] Data, ushort PCStart, ushort StopAt)
         {
             List<CodeEntry> output = new List<CodeEntry>();
             this.Data = Data;

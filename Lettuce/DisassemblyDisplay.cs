@@ -108,7 +108,7 @@ namespace Lettuce
             }
 
             FastDisassembler disassembler = new FastDisassembler();
-            Disassembly = disassembler.FastDisassemble(CPU.Memory.Raw, SelectedAddress, (ushort)(SelectedAddress + 100));
+            Disassembly = disassembler.FastDisassemble(ref CPU.Memory, SelectedAddress, (ushort)(SelectedAddress + 100));
 
             int index = 0;
             bool setLast = false, dark = SelectedAddress % 2 == 0;
@@ -126,7 +126,7 @@ namespace Lettuce
                     e.Graphics.FillRectangle(Brushes.DarkRed, new Rectangle(0, y, this.Width, TextRenderer.MeasureText(address, this.Font).Height + 2));
                     foreground = Brushes.White;
                 }
-                if (Disassembly[index].Address == CPU.Memory.PC)
+                if (Disassembly[index].Address == CPU.PC)
                 {
                     if (CPU.Breakpoints.Contains(Disassembly[index].Address))
                     {
@@ -184,12 +184,12 @@ namespace Lettuce
                     if (new Rectangle(new Point(0, y), size).IntersectsWith(
                         new Rectangle(new Point(x, MouseLocation.Y), new Size(1, 1))))
                     {
-                        ushort oldPC = CPU.Memory.PC;
-                        ushort oldSP = CPU.Memory.SP;
-                        CPU.Memory.PC = (ushort)(Disassembly[index].Address + 1);
-                        int valueA = 0, valueB = 0, temp = 0;
-                        ushort valueAcalc = CPU.Get(true,Disassembly[index].ValueA, ref temp);
-                        ushort valueBcalc = CPU.Get(false,Disassembly[index].ValueB, ref temp);
+                        ushort oldPC = CPU.PC;
+                        ushort oldSP = CPU.SP;
+                        CPU.PC = (ushort)(Disassembly[index].Address + 1);
+                        int valueA = 0, valueB = 0;
+                        ushort valueAcalc = CPU.Get(Disassembly[index].ValueA);
+                        ushort valueBcalc = CPU.Get(Disassembly[index].ValueB);
                         if (Disassembly[index].Opcode == 0)
                         {
                             valueB = int.MaxValue;
@@ -242,8 +242,8 @@ namespace Lettuce
                                     (hoverSize.Width / 2), locationY));
                             }
                         }
-                        CPU.Memory.PC = oldPC;
-                        CPU.Memory.SP = oldSP;
+                        CPU.PC = oldPC;
+                        CPU.SP = oldSP;
                         break;
                     }
                     index++;
