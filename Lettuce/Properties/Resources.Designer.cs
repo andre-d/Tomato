@@ -59,5 +59,12 @@ namespace Lettuce.Properties {
                 resourceCulture = value;
             }
         }
+        
+        internal static System.Drawing.Bitmap _1337914149_Tomato64 {
+            get {
+                object obj = ResourceManager.GetObject("1337914149_Tomato64", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
     }
 }

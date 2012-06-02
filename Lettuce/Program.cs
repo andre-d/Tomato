@@ -9,6 +9,7 @@ using System.Threading;
 using System.Reflection;
 using System.Globalization;
 using System.Drawing;
+using System.Security.Permissions;
 
 namespace Lettuce
 {
@@ -23,11 +24,18 @@ namespace Lettuce
         /// <summary>
         /// The main entry point for the application.
         /// </summary>
+        [SecurityPermission(SecurityAction.Demand, Flags = SecurityPermissionFlag.ControlAppDomain)]
         [STAThread]
         static void Main(string[] args)
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
+            if (!System.Diagnostics.Debugger.IsAttached)
+            {
+                AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(CurrentDomain_UnhandledException);
+                Application.SetUnhandledExceptionMode(UnhandledExceptionMode.CatchException, true);
+                Application.ThreadException += new ThreadExceptionEventHandler(Application_ThreadException);
+            }
 
             // Enumerate loaded devices from plugins and Tomato
             List<Device> PossibleDevices = new List<Device>();
@@ -60,21 +68,25 @@ namespace Lettuce
                         case "-c":
                         case "--connect":
                             string deviceID = args[++i];
-                            uint id;
-                            if (uint.TryParse(deviceID, NumberStyles.HexNumber, null, out id))
+                            string[] ids = deviceID.Split(',');
+                            foreach (var dID in ids)
                             {
-                                foreach (Device d in PossibleDevices)
+                                uint id;
+                                if (uint.TryParse(dID, NumberStyles.HexNumber, null, out id))
                                 {
-                                    if (d.DeviceID == id)
-                                        devices.Add((Device)Activator.CreateInstance(d.GetType()));
+                                    foreach (Device d in PossibleDevices)
+                                    {
+                                        if (d.DeviceID == id)
+                                            devices.Add((Device)Activator.CreateInstance(d.GetType()));
+                                    }
                                 }
-                            }
-                            else
-                            {
-                                foreach (Device d in PossibleDevices)
+                                else
                                 {
-                                    if (d.GetType().Name.ToLower() == deviceID.ToLower())
-                                        devices.Add((Device)Activator.CreateInstance(d.GetType()));
+                                    foreach (Device d in PossibleDevices)
+                                    {
+                                        if (d.GetType().Name.ToLower() == dID.ToLower())
+                                            devices.Add((Device)Activator.CreateInstance(d.GetType()));
+                                    }
                                 }
                             }
                             break;
@@ -157,6 +169,17 @@ namespace Lettuce
             timer = new System.Threading.Timer(FetchExecute, null, 10, Timeout.Infinite);
             Application.Run(debugger);
             timer.Dispose();
+        }
+
+        static void Application_ThreadException(object sender, ThreadExceptionEventArgs e)
+        {
+            CurrentDomain_UnhandledException(sender, new UnhandledExceptionEventArgs(e.Exception, false));
+        }
+
+        static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
+        {
+            UnhandledExceptionForm uef = new UnhandledExceptionForm((Exception)e.ExceptionObject, e.IsTerminating);
+            uef.ShowDialog();
         }
 
         private static void FetchExecute(object o)
