@@ -40,7 +40,7 @@ namespace Lettuce
         private void button2_Click(object sender, EventArgs e)
         {
             Process.Start(string.Format("mailto:sir@cmpwn.com?subject={0}&body={1}",
-                Uri.EscapeUriString("Unhandled Exception: "),
+                Uri.EscapeUriString("Unhandled Exception: " + Exception.GetType().Name),
                 Uri.EscapeUriString(textBox1.Text)));
         }
 
@@ -57,7 +57,7 @@ namespace Lettuce
         private void button3_Click(object sender, EventArgs e)
         {
             Process.Start(string.Format("https://github.com/SirCmpwn/Tomato/issues/new?title={0}&body={1}",
-                Uri.EscapeUriString("Unhandled Exception: "),
+                Uri.EscapeUriString("Unhandled Exception: " + Exception.GetType().Name),
                 Uri.EscapeUriString(textBox1.Text)));
         }
     }
