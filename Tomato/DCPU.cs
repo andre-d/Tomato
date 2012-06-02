@@ -103,221 +103,224 @@ namespace Tomato
                 short opB_s = (short)opB;
                 short opA_s = (short)opA;
                 cycles--;
-                switch (opcode)
+                unchecked
                 {
-                    case 0x00: // (nonbasic)
-                        switch (valueB)
-                        {
-                            case 0x01: // JSR a
-                                cycles -= 2;
-                                Memory[--SP] = PC;
-                                PC = opA;
-                                break;
-                            case 0x08: // INT a
-                                cycles -= 3;
-                                InterruptQueueEnabled = false;
-                                FireInterrupt(opA);
-                                break;
-                            case 0x09: // IAG a
-                                Set(valueA, IA);
-                                break;
-                            case 0x0A: // IAS a
-                                IA = opA;
-                                break;
-                            case 0x0B: // RFI a
-                                A = Memory[SP++];
-                                PC = Memory[SP++];
-                                InterruptQueueEnabled = false;
-                                break;
-                            case 0x10: // HWN a
-                                cycles--;
-                                Set(valueA, (ushort)ConnectedDevices.Count);
-                                break;
-                            case 0x11: // HWQ a
-                                cycles -= 3;
-                                if (opA < ConnectedDevices.Count)
-                                {
-                                    Device d = ConnectedDevices[opA];
-                                    A = (ushort)(d.DeviceID & 0xFFFF);
-                                    B = (ushort)((d.DeviceID & 0xFFFF0000) >> 16);
-                                    C = d.Version;
-                                    X = (ushort)(d.ManufacturerID & 0xFFFF);
-                                    Y = (ushort)((d.ManufacturerID & 0xFFFF0000) >> 16);
-                                }
-                                break;
-                            case 0x12: // HWI a
-                                cycles -= 3;
-                                if (opA < ConnectedDevices.Count)
-                                    cycles -= ConnectedDevices[opA].HandleInterrupt();
-                                break;
-                        }
-                        break;
-                    case 0x01: // SET b, a
-                        Set(valueB, opA);
-                        break;
-                    case 0x02: // ADD b, a
-                        cycles--;
-                        if (opB + opA > 0xFFFF)
-                            EX = 0x0001;
-                        else
-                            EX = 0;
-                        Set(valueB, (ushort)(opB + opA));
-                        break;
-                    case 0x03: // SUB b, a
-                        cycles--;
-                        if (opB - opA < 0)
-                            EX = 0xFFFF;
-                        else
-                            EX = 0;
-                        Set(valueB, (ushort)(opB - opA));
-                        break;
-                    case 0x04: // MUL b, a
-                        cycles--;
-                        EX = (ushort)(((opB * opA) >> 16) & 0xffff);
-                        Set(valueB, (ushort)(opB * opA));
-                        break;
-                    case 0x05: // MLI b, a
-                        cycles--;
-                        EX = (ushort)(((opB_s * opA_s) >> 16) & 0xffff);
-                        Set(valueB, (ushort)(opB_s * opA_s));
-                        break;
-                    case 0x06: // DIV b, a
-                        cycles -= 2;
-                        if (opA == 0)
-                        {
-                            EX = 0;
-                            Set(valueB, 0);
-                        }
-                        else
-                        {
-                            EX = (ushort)(((opB << 16) / opA) & 0xffff);
-                            Set(valueB, (ushort)(opB / opA));
-                        }
-                        break;
-                    case 0x07: // DVI b, a
-                        cycles -= 2;
-                        if (opA_s == 0)
-                        {
-                            EX = 0;
-                            Set(valueB, 0);
-                        }
-                        else
-                        {
-                            EX = (ushort)(((opB_s << 16) / opA_s) & 0xffff);
-                            Set(valueB, (ushort)(opB_s / opA_s));
-                        }
-                        break;
-                    case 0x08: // MOD b, a
-                        cycles -= 2;
-                        if (opA == 0)
-                            Set(valueB, 0);
-                        else
-                            Set(valueB, (ushort)(opB % opA));
-                        break;
-                    case 0x09: // MDI b, a
-                        cycles -= 2;
-                        if (opA_s == 0)
-                            Set(valueB, 0);
-                        else
-                            Set(valueB, (ushort)(opB_s % opA_s));
-                        break;
-                    case 0x0A: // AND b, a
-                        Set(valueB, (ushort)(opB & opA));
-                        break;
-                    case 0x0B: // BOR b, a
-                        Set(valueB, (ushort)(opB | opA));
-                        break;
-                    case 0x0C: // XOR b, a
-                        Set(valueB, (ushort)(opB ^ opA));
-                        break;
-                    case 0x0D: // SHR b, a
-                        EX = (ushort)(((opB << 16) >> opA) & 0xffff);
-                        Set(valueB, (ushort)(opB >> opA));
-                        break;
-                    case 0x0E: // ASR b, a
-                        EX = (ushort)(((opB_s << 16) >> opA) & 0xffff);
-                        Set(valueB, (ushort)(opB_s >> opA));
-                        break;
-                    case 0x0F: // SHL b, a
-                        EX = (ushort)(((opB << opA) >> 16) & 0xffff);
-                        Set(valueB, (ushort)(opB << opA));
-                        break;
-                    case 0x10: // IFB b, a
-                        cycles -= 2;
-                        Get(valueB);
-                        if (!((ushort)(opB & opA) != 0))
-                            SkipIfChain();
-                        break;
-                    case 0x11: // IFC b, a
-                        cycles -= 2;
-                        Get(valueB);
-                        if (!((ushort)(opB & opA) == 0))
-                            SkipIfChain();
-                        break;
-                    case 0x12: // IFE b, a
-                        cycles -= 2;
-                        Get(valueB);
-                        if (!(opB == opA))
-                            SkipIfChain();
-                        break;
-                    case 0x13: // IFN b, a
-                        cycles -= 2;
-                        Get(valueB);
-                        if (!(opB != opA))
-                            SkipIfChain();
-                        break;
-                    case 0x14: // IFG b, a
-                        cycles -= 2;
-                        Get(valueB);
-                        if (!(opB > opA))
-                            SkipIfChain();
-                        break;
-                    case 0x15: // IFA b, a
-                        cycles -= 2;
-                        Get(valueB);
-                        if (!(opB_s > opA_s))
-                            SkipIfChain();
-                        break;
-                    case 0x16: // IFL b, a
-                        cycles -= 2;
-                        Get(valueB);
-                        if (!(opB < opA))
-                            SkipIfChain();
-                        break;
-                    case 0x17: // IFU b, a
-                        cycles += 2;
-                        Get(valueB);
-                        if (!(opB_s < opA_s))
-                            SkipIfChain();
-                        break;
-                    case 0x1A: // ADX b, a
-                        cycles -= 2;
-                        uint resADX = (uint)(opB + opA + (short)EX);
-                        EX = (ushort)((resADX >> 16) & 0xFFFF);
-                        Set(valueB, (ushort)resADX);
-                        break;
-                    case 0x1B: // SBX b, a
-                        cycles -= 2;
-                        uint resSBX = (uint)(opB - opA + (short)EX);
-                        EX = (ushort)((resSBX >> 16) & 0xFFFF);
-                        Set(valueB, (ushort)resSBX);
-                        break;
-                    case 0x1E: // STI b, a
-                        cycles--;
-                        Set(valueB, opA);
-                        I++;
-                        J++;
-                        break;
-                    case 0x1F: // STD b, a
-                        cycles--;
-                        Set(valueB, opA);
-                        I--;
-                        J--;
-                        break;
-                    default:
-                        // According to spec, should take zero cycles
-                        // For sanity, all NOPs take one cycle
-                        break;
+                    switch (opcode)
+                    {
+                        case 0x00: // (nonbasic)
+                            switch (valueB)
+                            {
+                                case 0x01: // JSR a
+                                    cycles -= 2;
+                                    Memory[--SP] = PC;
+                                    PC = opA;
+                                    break;
+                                case 0x08: // INT a
+                                    cycles -= 3;
+                                    InterruptQueueEnabled = false;
+                                    FireInterrupt(opA);
+                                    break;
+                                case 0x09: // IAG a
+                                    Set(valueA, IA);
+                                    break;
+                                case 0x0A: // IAS a
+                                    IA = opA;
+                                    break;
+                                case 0x0B: // RFI a
+                                    A = Memory[SP++];
+                                    PC = Memory[SP++];
+                                    InterruptQueueEnabled = false;
+                                    break;
+                                case 0x10: // HWN a
+                                    cycles--;
+                                    Set(valueA, (ushort)ConnectedDevices.Count);
+                                    break;
+                                case 0x11: // HWQ a
+                                    cycles -= 3;
+                                    if (opA < ConnectedDevices.Count)
+                                    {
+                                        Device d = ConnectedDevices[opA];
+                                        A = (ushort)(d.DeviceID & 0xFFFF);
+                                        B = (ushort)((d.DeviceID & 0xFFFF0000) >> 16);
+                                        C = d.Version;
+                                        X = (ushort)(d.ManufacturerID & 0xFFFF);
+                                        Y = (ushort)((d.ManufacturerID & 0xFFFF0000) >> 16);
+                                    }
+                                    break;
+                                case 0x12: // HWI a
+                                    cycles -= 3;
+                                    if (opA < ConnectedDevices.Count)
+                                        cycles -= ConnectedDevices[opA].HandleInterrupt();
+                                    break;
+                            }
+                            break;
+                        case 0x01: // SET b, a
+                            Set(valueB, opA);
+                            break;
+                        case 0x02: // ADD b, a
+                            cycles--;
+                            if (opB + opA > 0xFFFF)
+                                EX = 0x0001;
+                            else
+                                EX = 0;
+                            Set(valueB, (ushort)(opB + opA));
+                            break;
+                        case 0x03: // SUB b, a
+                            cycles--;
+                            if (opB - opA < 0)
+                                EX = 0xFFFF;
+                            else
+                                EX = 0;
+                            Set(valueB, (ushort)(opB - opA));
+                            break;
+                        case 0x04: // MUL b, a
+                            cycles--;
+                            EX = (ushort)(((opB * opA) >> 16) & 0xffff);
+                            Set(valueB, (ushort)(opB * opA));
+                            break;
+                        case 0x05: // MLI b, a
+                            cycles--;
+                            EX = (ushort)(((opB_s * opA_s) >> 16) & 0xffff);
+                            Set(valueB, (ushort)(opB_s * opA_s));
+                            break;
+                        case 0x06: // DIV b, a
+                            cycles -= 2;
+                            if (opA == 0)
+                            {
+                                EX = 0;
+                                Set(valueB, 0);
+                            }
+                            else
+                            {
+                                EX = (ushort)(((opB << 16) / opA) & 0xffff);
+                                Set(valueB, (ushort)(opB / opA));
+                            }
+                            break;
+                        case 0x07: // DVI b, a
+                            cycles -= 2;
+                            if (opA_s == 0)
+                            {
+                                EX = 0;
+                                Set(valueB, 0);
+                            }
+                            else
+                            {
+                                EX = (ushort)(((opB_s << 16) / opA_s) & 0xffff);
+                                Set(valueB, (ushort)(opB_s / opA_s));
+                            }
+                            break;
+                        case 0x08: // MOD b, a
+                            cycles -= 2;
+                            if (opA == 0)
+                                Set(valueB, 0);
+                            else
+                                Set(valueB, (ushort)(opB % opA));
+                            break;
+                        case 0x09: // MDI b, a
+                            cycles -= 2;
+                            if (opA_s == 0)
+                                Set(valueB, 0);
+                            else
+                                Set(valueB, (ushort)(opB_s % opA_s));
+                            break;
+                        case 0x0A: // AND b, a
+                            Set(valueB, (ushort)(opB & opA));
+                            break;
+                        case 0x0B: // BOR b, a
+                            Set(valueB, (ushort)(opB | opA));
+                            break;
+                        case 0x0C: // XOR b, a
+                            Set(valueB, (ushort)(opB ^ opA));
+                            break;
+                        case 0x0D: // SHR b, a
+                            EX = (ushort)(((opB << 16) >> opA) & 0xffff);
+                            Set(valueB, (ushort)(opB >> opA));
+                            break;
+                        case 0x0E: // ASR b, a
+                            EX = (ushort)(((opB_s << 16) >> opA) & 0xffff);
+                            Set(valueB, (ushort)(opB_s >> opA));
+                            break;
+                        case 0x0F: // SHL b, a
+                            EX = (ushort)(((opB << opA) >> 16) & 0xffff);
+                            Set(valueB, (ushort)(opB << opA));
+                            break;
+                        case 0x10: // IFB b, a
+                            cycles -= 2;
+                            Get(valueB);
+                            if (!((ushort)(opB & opA) != 0))
+                                SkipIfChain();
+                            break;
+                        case 0x11: // IFC b, a
+                            cycles -= 2;
+                            Get(valueB);
+                            if (!((ushort)(opB & opA) == 0))
+                                SkipIfChain();
+                            break;
+                        case 0x12: // IFE b, a
+                            cycles -= 2;
+                            Get(valueB);
+                            if (!(opB == opA))
+                                SkipIfChain();
+                            break;
+                        case 0x13: // IFN b, a
+                            cycles -= 2;
+                            Get(valueB);
+                            if (!(opB != opA))
+                                SkipIfChain();
+                            break;
+                        case 0x14: // IFG b, a
+                            cycles -= 2;
+                            Get(valueB);
+                            if (!(opB > opA))
+                                SkipIfChain();
+                            break;
+                        case 0x15: // IFA b, a
+                            cycles -= 2;
+                            Get(valueB);
+                            if (!(opB_s > opA_s))
+                                SkipIfChain();
+                            break;
+                        case 0x16: // IFL b, a
+                            cycles -= 2;
+                            Get(valueB);
+                            if (!(opB < opA))
+                                SkipIfChain();
+                            break;
+                        case 0x17: // IFU b, a
+                            cycles += 2;
+                            Get(valueB);
+                            if (!(opB_s < opA_s))
+                                SkipIfChain();
+                            break;
+                        case 0x1A: // ADX b, a
+                            cycles -= 2;
+                            uint resADX = (uint)(opB + opA + (short)EX);
+                            EX = (ushort)((resADX >> 16) & 0xFFFF);
+                            Set(valueB, (ushort)resADX);
+                            break;
+                        case 0x1B: // SBX b, a
+                            cycles -= 2;
+                            uint resSBX = (uint)(opB - opA + (short)EX);
+                            EX = (ushort)((resSBX >> 16) & 0xFFFF);
+                            Set(valueB, (ushort)resSBX);
+                            break;
+                        case 0x1E: // STI b, a
+                            cycles--;
+                            Set(valueB, opA);
+                            I++;
+                            J++;
+                            break;
+                        case 0x1F: // STD b, a
+                            cycles--;
+                            Set(valueB, opA);
+                            I--;
+                            J--;
+                            break;
+                        default:
+                            // According to spec, should take zero cycles
+                            // For sanity, all NOPs take one cycle
+                            break;
+                    }
                 }
             }
             if (CyclesToExecute == -1)
