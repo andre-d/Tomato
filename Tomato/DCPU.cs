@@ -131,6 +131,10 @@ namespace Tomato
                                     PC = Memory[SP++];
                                     InterruptQueueEnabled = false;
                                     break;
+                                case 0x0C: // IAQ a
+                                    cycles--;
+                                    InterruptQueueEnabled = opA != 0;
+                                    break;
                                 case 0x10: // HWN a
                                     cycles--;
                                     Set(valueA, (ushort)ConnectedDevices.Count);
