@@ -109,6 +109,8 @@ namespace Inorganic
                     return "IAS";
                 case 0x0B: // RFI a
                     return "RFI";
+                case 0x0C: // IAQ a
+                    return "IAQ";
                 case 0x10: // HWN a
                     return "HWN";
                 case 0x11: // HWQ a
