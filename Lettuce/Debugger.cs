@@ -513,6 +513,36 @@ namespace Lettuce
         {
             CPU.InterruptQueueEnabled = !CPU.InterruptQueueEnabled;
             ResetLayout();
+		}
+		
+		private void loadToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            string binFile = null;
+            bool littleEndian = false;
+            MemoryConfiguration mc = new MemoryConfiguration();
+            if (mc.ShowDialog() == DialogResult.OK)
+            {
+                binFile = mc.FileName;
+                littleEndian = mc.LittleEndian;
+            }
+            if (!string.IsNullOrEmpty(binFile))
+            {
+                // Load binary file
+                List<ushort> data = new List<ushort>();
+                using (Stream stream = File.OpenRead(binFile))
+                {
+                    for (int i = 0; i < stream.Length; i += 2)
+                    {
+                        byte a = (byte)stream.ReadByte();
+                        byte b = (byte)stream.ReadByte();
+                        if (littleEndian)
+                            data.Add((ushort)(a | (b << 8)));
+                        else
+                            data.Add((ushort)(b | (a << 8)));
+                    }
+                }
+                Lettuce.Program.CPU.FlashMemory(data.ToArray());
+            }
         }
     }
 }
