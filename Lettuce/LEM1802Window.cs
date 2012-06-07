@@ -37,17 +37,17 @@ namespace Lettuce
             this.ClientSize = new Size(LEM1802.Width * 4 + 20, LEM1802.Height * 4 + 35);
             // Take a screen
             Screen = LEM1802;
-            ScreenIndex = CPU.ConnectedDevices.IndexOf(Screen);
+            ScreenIndex = CPU.Devices.IndexOf(Screen);
             // Take a keyboard
             if (AssignKeyboard)
             {
-                for (int i = 0; i < CPU.ConnectedDevices.Count; i++)
+                for (int i = 0; i < CPU.Devices.Count; i++)
                 {
                     if (AssignedKeyboards.Contains(i))
                         continue;
-                    if (CPU.ConnectedDevices[i] is GenericKeyboard)
+                    if (CPU.Devices[i] is GenericKeyboard)
                     {
-                        Keyboard = CPU.ConnectedDevices[i] as GenericKeyboard;
+                        Keyboard = CPU.Devices[i] as GenericKeyboard;
                         AssignedKeyboards.Add(i);
                         KeyboardIndex = i;
                         break;

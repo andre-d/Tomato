@@ -174,12 +174,12 @@ namespace Pickles
                     if (parts.Length > 1)
                     {
                         int index = int.Parse(parts[1]);
-                        if (CPU.ConnectedDevices[index] is LEM1802)
-                            DrawScreen(CPU.ConnectedDevices[index] as LEM1802, Console);
+                        if (CPU.Devices[index] is LEM1802)
+                            DrawScreen(CPU.Devices[index] as LEM1802, Console);
                     }
                     else
                     {
-                        foreach (var device in CPU.ConnectedDevices)
+                        foreach (var device in CPU.Devices)
                             if (device is LEM1802)
                             {
                                 DrawScreen(device as LEM1802, Console);
@@ -240,7 +240,7 @@ namespace Pickles
                 }
                 else if (parts[1] == "hardware")
                 {
-                    foreach (var hw in CPU.ConnectedDevices)
+                    foreach (var hw in CPU.Devices)
                         Console.WriteLine(hw.FriendlyName);
                 }
             }

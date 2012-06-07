@@ -152,7 +152,7 @@ namespace Lettuce
             Point screenLocation = new Point();
             screenLocation.Y = debugger.Location.Y + 4;
             screenLocation.X = debugger.Location.X + debugger.Width + 5;
-            foreach (Device d in CPU.ConnectedDevices)
+            foreach (Device d in CPU.Devices)
             {
                 if (d is LEM1802)
                 {

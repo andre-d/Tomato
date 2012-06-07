@@ -34,7 +34,7 @@ namespace Lettuce
             this.rawMemoryDisplay.CPU = this.CPU;
             this.stackDisplay.CPU = this.CPU;
             this.disassemblyDisplay1.CPU = this.CPU;
-            foreach (Device d in CPU.ConnectedDevices)
+            foreach (Device d in CPU.Devices)
                 listBoxConnectedDevices.Items.Add(d.FriendlyName);
             // Load device controllers
             DeviceControllers = new List<Type>();
@@ -173,7 +173,7 @@ namespace Lettuce
         {
             if (listBoxConnectedDevices.SelectedIndex == -1)
                 return;
-            Device selected = CPU.ConnectedDevices[listBoxConnectedDevices.SelectedIndex];
+            Device selected = CPU.Devices[listBoxConnectedDevices.SelectedIndex];
             labelHardwareID.Text = "Hardware ID: " + GetHexString(selected.DeviceID, 8);
             labelManufacturer.Text = "Manufacturer: " + GetHexString(selected.ManufacturerID, 8);
             labelVersion.Text = "Version: " + GetHexString(selected.Version, 4);
@@ -380,7 +380,7 @@ namespace Lettuce
         {
             if (listBoxConnectedDevices.SelectedIndex == -1)
                 return;
-            Device d = CPU.ConnectedDevices[listBoxConnectedDevices.SelectedIndex];
+            Device d = CPU.Devices[listBoxConnectedDevices.SelectedIndex];
             CPU.IsRunning = false;
             ResetLayout();
             foreach (Type type in DeviceControllers)

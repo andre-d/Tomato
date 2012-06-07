@@ -22,7 +22,7 @@ namespace Lettuce.HardwareControllers
 
         void LEM1802Controller_Shown(object sender, EventArgs e)
         {
-            deviceIndexLabel.Text += CPU.ConnectedDevices.IndexOf(Device);
+            deviceIndexLabel.Text += CPU.Devices.IndexOf(Device);
             hardwareIdLabel.Text += Debugger.GetHexString(Device.DeviceID, 8);
             manufacturerIdLabel.Text += Debugger.GetHexString(Device.ManufacturerID, 8);
             versionLabel.Text += Debugger.GetHexString(Device.Version, 4);

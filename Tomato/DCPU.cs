@@ -10,7 +10,7 @@ namespace Tomato
     {
         public DCPU()
         {
-            ConnectedDevices = new List<Device>();
+            Devices = new List<Device>();
             Breakpoints = new List<Breakpoint>();
             InterruptQueue = new Queue<ushort>();
             Memory = new ushort[0x10000];
@@ -20,7 +20,7 @@ namespace Tomato
                 Random = new Random();
         }
 
-        public List<Device> ConnectedDevices;
+        public List<Device> Devices;
         public List<Breakpoint> Breakpoints;
         public Queue<ushort> InterruptQueue;
         public bool InterruptQueueEnabled, IsOnFire;
@@ -143,13 +143,13 @@ namespace Tomato
                                     break;
                                 case 0x10: // HWN a
                                     cycles--;
-                                    Set(valueA, (ushort)ConnectedDevices.Count);
+                                    Set(valueA, (ushort)Devices.Count);
                                     break;
                                 case 0x11: // HWQ a
                                     cycles -= 3;
-                                    if (opA < ConnectedDevices.Count)
+                                    if (opA < Devices.Count)
                                     {
-                                        Device d = ConnectedDevices[opA];
+                                        Device d = Devices[opA];
                                         A = (ushort)(d.DeviceID & 0xFFFF);
                                         B = (ushort)((d.DeviceID & 0xFFFF0000) >> 16);
                                         C = d.Version;
@@ -159,8 +159,8 @@ namespace Tomato
                                     break;
                                 case 0x12: // HWI a
                                     cycles -= 3;
-                                    if (opA < ConnectedDevices.Count)
-                                        cycles -= ConnectedDevices[opA].HandleInterrupt();
+                                    if (opA < Devices.Count)
+                                        cycles -= Devices[opA].HandleInterrupt();
                                     break;
                             }
                             break;
@@ -378,7 +378,7 @@ namespace Tomato
         public void ConnectDevice(Device Device)
         {
             Device.AttachedCPU = this;
-            ConnectedDevices.Add(Device);
+            Devices.Add(Device);
         }
 
         public void FlashMemory(ushort[] Data)
@@ -571,7 +571,7 @@ namespace Tomato
         {
             A = B = C = X = Y = Z = I = J = PC = EX = IA = SP = 0;
 
-            foreach (var device in ConnectedDevices)
+            foreach (var device in Devices)
                 device.Reset();
         }
     }
