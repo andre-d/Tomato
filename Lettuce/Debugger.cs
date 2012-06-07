@@ -52,7 +52,7 @@ namespace Lettuce
         {
             if (stepOverEnabled)
             {
-                CPU.Breakpoints.Remove(CPU.PC);
+                CPU.Breakpoints.Remove(CPU.Breakpoints.Where(b => b.Address == CPU.PC).First());
                 e.ContinueExecution = false;
                 (sender as DCPU).IsRunning = false;
                 disassemblyDisplay1.EnableUpdates = true;
@@ -113,6 +113,7 @@ namespace Lettuce
                 textBoxRegisterIA.Text = GetHexString(CPU.IA, 4);
                 checkBoxRunning.Checked = CPU.IsRunning;
                 checkBoxInterruptQueue.Checked = CPU.InterruptQueueEnabled;
+                labelQueuedInterrupts.Text = "Queued Interrupts: " + CPU.InterruptQueue.Count.ToString();
                 checkBoxOnFire.Checked = CPU.IsOnFire;
                 rawMemoryDisplay.Invalidate();
                 disassemblyDisplay1.Invalidate();
@@ -325,7 +326,7 @@ namespace Lettuce
         {
             // Set a breakpoint ahead of PC
             ushort length = CPU.InstructionLength(CPU.PC);
-            CPU.Breakpoints.Add((ushort)(CPU.PC + length));
+            CPU.Breakpoints.Add(new Breakpoint() { Address = (ushort)(CPU.PC + length) });
             stepOverAddress = (ushort)(CPU.PC + length);
             stepOverEnabled = true;
             disassemblyDisplay1.EnableUpdates = false;
@@ -467,30 +468,51 @@ namespace Lettuce
 
         private void toolStripMenuItem2_Click(object sender, EventArgs e)
         {
+            foreach (var item in speedToolStripMenuItem.DropDownItems)
+                (item as ToolStripMenuItem).Checked = false;
+            (sender as ToolStripMenuItem).Checked = true;
             CPU.ClockSpeed = 50000;
         }
 
         private void toolStripMenuItem3_Click(object sender, EventArgs e)
         {
+            foreach (var item in speedToolStripMenuItem.DropDownItems)
+                (item as ToolStripMenuItem).Checked = false;
+            (sender as ToolStripMenuItem).Checked = true;
             CPU.ClockSpeed = 100000;
         }
 
         private void toolStripMenuItem4_Click(object sender, EventArgs e)
         {
+            foreach (var item in speedToolStripMenuItem.DropDownItems)
+                (item as ToolStripMenuItem).Checked = false;
+            (sender as ToolStripMenuItem).Checked = true;
             CPU.ClockSpeed = 200000;
         }
 
         private void toolStripMenuItem5_Click(object sender, EventArgs e)
         {
+            foreach (var item in speedToolStripMenuItem.DropDownItems)
+                (item as ToolStripMenuItem).Checked = false;
+            (sender as ToolStripMenuItem).Checked = true;
             CPU.ClockSpeed = 1000000;
         }
 
         private void customToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            foreach (var item in speedToolStripMenuItem.DropDownItems)
+                (item as ToolStripMenuItem).Checked = false;
+            (sender as ToolStripMenuItem).Checked = true;
             ClockSpeedForm csf = new ClockSpeedForm();
             csf.Value = CPU.ClockSpeed;
             csf.ShowDialog();
             CPU.ClockSpeed = csf.Value;
+        }
+
+        private void checkBoxInterruptQueue_CheckedChanged(object sender, EventArgs e)
+        {
+            CPU.InterruptQueueEnabled = !CPU.InterruptQueueEnabled;
+            ResetLayout();
         }
     }
 }

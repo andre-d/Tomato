@@ -7,7 +7,6 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using Tomato;
-using Inorganic;
 using System.Threading;
 
 namespace Lettuce
@@ -85,10 +84,10 @@ namespace Lettuce
                 index++;
                 offset--;
             }
-            if (CPU.Breakpoints.Contains(address))
-                CPU.Breakpoints.Remove(address);
+            if (CPU.Breakpoints.Where(b => b.Address == address).Count() != 0)
+                CPU.Breakpoints.Remove(CPU.Breakpoints.Where(b => b.Address == address).First());
             else
-                CPU.Breakpoints.Add(address);
+                CPU.Breakpoints.Add(new Breakpoint() { Address = address });
             this.Invalidate();
         }
 
@@ -107,7 +106,7 @@ namespace Lettuce
                 return;
             }
 
-            FastDisassembler disassembler = new FastDisassembler();
+            FastDisassembler disassembler = new FastDisassembler(Debugger.KnownLabels);
             Disassembly = disassembler.FastDisassemble(ref CPU.Memory, SelectedAddress, (ushort)(SelectedAddress + 100));
 
             int index = 0;
@@ -121,14 +120,14 @@ namespace Lettuce
                     e.Graphics.FillRectangle(new SolidBrush(Color.FromArgb(255, 230, 230, 230)), new Rectangle(0, y, this.Width, TextRenderer.MeasureText(address, this.Font).Height + 2));
                 dark = !dark;
 
-                if (CPU.Breakpoints.Contains(Disassembly[index].Address))
+                if (CPU.Breakpoints.Where(b => b.Address == Disassembly[index].Address).Count() != 0)
                 {
                     e.Graphics.FillRectangle(Brushes.DarkRed, new Rectangle(0, y, this.Width, TextRenderer.MeasureText(address, this.Font).Height + 2));
                     foreground = Brushes.White;
                 }
                 if (Disassembly[index].Address == CPU.PC)
                 {
-                    if (CPU.Breakpoints.Contains(Disassembly[index].Address))
+                    if (CPU.Breakpoints.Where(b => b.Address == Disassembly[index].Address).Count() != 0)
                     {
                         if (Disassembly[index].IsLabel)
                             e.Graphics.FillRectangle(Brushes.Yellow, new Rectangle(0, y + 2, this.Width, TextRenderer.MeasureText(address, this.Font).Height));

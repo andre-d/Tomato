@@ -11,7 +11,7 @@ namespace Tomato
         public DCPU()
         {
             ConnectedDevices = new List<Device>();
-            Breakpoints = new List<ushort>();
+            Breakpoints = new List<Breakpoint>();
             InterruptQueue = new Queue<ushort>();
             Memory = new ushort[0x10000];
             InterruptQueueEnabled = IsOnFire = false;
@@ -21,7 +21,7 @@ namespace Tomato
         }
 
         public List<Device> ConnectedDevices;
-        public List<ushort> Breakpoints;
+        public List<Breakpoint> Breakpoints;
         public Queue<ushort> InterruptQueue;
         public bool InterruptQueueEnabled, IsOnFire;
         public ushort[] Memory;
@@ -75,13 +75,19 @@ namespace Tomato
             while (cycles > 0)
             {
                 if (BreakpointHit != null)
-                    if (Breakpoints.Contains(PC))
+                {
+                    foreach (var breakpoint in Breakpoints)
                     {
-                        BreakpointEventArgs bea = new BreakpointEventArgs();
-                        BreakpointHit(this, bea);
-                        if (!bea.ContinueExecution)
-                            return;
+                        if (breakpoint.Address == PC)
+                        {
+                            BreakpointEventArgs bea = new BreakpointEventArgs(breakpoint);
+                            BreakpointHit(this, bea);
+                            if (!bea.ContinueExecution)
+                                return;
+                            break;
+                        }
                     }
+                }
                 if (IsOnFire)
                     Memory[Random.Next(0xFFFF)] = (ushort)Random.Next(0xFFFF);
                 if (!InterruptQueueEnabled && InterruptQueue.Count > 0)
