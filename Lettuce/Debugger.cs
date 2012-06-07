@@ -404,7 +404,7 @@ namespace Lettuce
         {
             // Load organic listing
             OpenFileDialog ofd = new OpenFileDialog();
-            ofd.Filter = "Listing files (*.lst)|*.lst|All files (*.*)|*.*";
+            ofd.Filter = "Listing files (*.lst)|*.lst|Text files (*.txt)|*.txt|All files (*.*)|*.*";
             ofd.FileName = "";
             if (ofd.ShowDialog() != DialogResult.OK)
                 return;
@@ -543,6 +543,29 @@ namespace Lettuce
                 }
                 Lettuce.Program.CPU.FlashMemory(data.ToArray());
             }
+        }
+
+        private void reloadToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            CPU.Reset();
+			CPU.Memory = new ushort[0x10000];
+
+            // Load binary file
+            List<ushort> data = new List<ushort>();
+            using (Stream stream = File.OpenRead(Lettuce.Program.lastbinFilepath))
+            {
+                for (int i = 0; i < stream.Length; i += 2)
+                {
+                    byte a = (byte)stream.ReadByte();
+                    byte b = (byte)stream.ReadByte();
+                    if (Lettuce.Program.lastlittleEndian)
+                        data.Add((ushort)(a | (b << 8)));
+                    else
+                        data.Add((ushort)(b | (a << 8)));
+                }
+            }
+            Lettuce.Program.CPU.FlashMemory(data.ToArray());
+            ResetLayout();
         }
     }
 }

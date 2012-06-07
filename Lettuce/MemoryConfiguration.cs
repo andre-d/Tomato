@@ -49,8 +49,11 @@ namespace Lettuce
 
         private void button1_Click(object sender, EventArgs e)
         {
+            Lettuce.Program.lastbinFilepath = textBox1.Text;
+
             DialogResult = DialogResult.OK;
             this.Close();
+            Lettuce.Program.lastlittleEndian = checkBox1.Checked;
         }
     }
 }
