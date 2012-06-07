@@ -100,6 +100,7 @@
             this.memoryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.gotoAddressToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.resetToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.reloadToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -708,7 +709,8 @@
             this.stepIntoToolStripMenuItem,
             this.stepOverToolStripMenuItem,
             this.loadListingToolStripMenuItem,
-            this.defineValueToolStripMenuItem});
+            this.defineValueToolStripMenuItem,
+            this.reloadToolStripMenuItem});
             this.debugToolStripMenuItem.Name = "debugToolStripMenuItem";
             this.debugToolStripMenuItem.Size = new System.Drawing.Size(54, 20);
             this.debugToolStripMenuItem.Text = "Debug";
@@ -757,6 +759,14 @@
             this.defineValueToolStripMenuItem.Size = new System.Drawing.Size(144, 22);
             this.defineValueToolStripMenuItem.Text = "Define Value";
             this.defineValueToolStripMenuItem.Click += new System.EventHandler(this.defineValueToolStripMenuItem_Click);
+            //
+            // reloadToolStripMenuItem
+            //
+            this.reloadToolStripMenuItem.Name = "reloadToolStripMenuItem";
+            this.reloadToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.reloadToolStripMenuItem.Text = "Reload";
+            this.reloadToolStripMenuItem.Click += new System.EventHandler(this.reloadToolStripMenuItem_Click);
+            //
             // 
             // memoryToolStripMenuItem
             // 
@@ -878,6 +888,6 @@
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem5;
         private System.Windows.Forms.ToolStripMenuItem customToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem loadToolStripMenuItem;
-
+        private System.Windows.Forms.ToolStripMenuItem reloadToolStripMenuItem;
     }
 }

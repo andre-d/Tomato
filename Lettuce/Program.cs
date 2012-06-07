@@ -19,6 +19,8 @@ namespace Lettuce
         public static DateTime LastTick;
         public static Debugger debugger;
 
+        public static string lastbinFilepath = "";
+        public static bool lastlittleEndian = false;
         private static System.Threading.Timer timer;
 
         /// <summary>
