@@ -409,6 +409,7 @@ namespace Lettuce
             if (ofd.ShowDialog() != DialogResult.OK)
                 return;
             LoadOrganicListing(ofd.FileName);
+            Lettuce.Program.lastlistingFilepath = ofd.FileName;
             ResetLayout();
         }
 
@@ -565,7 +566,15 @@ namespace Lettuce
                 }
             }
             Lettuce.Program.CPU.FlashMemory(data.ToArray());
+            Clearlisting();
+            LoadOrganicListing(Lettuce.Program.lastlistingFilepath);
             ResetLayout();
+        }
+
+        private void Clearlisting()
+        {
+            KnownCode = null;
+            KnownLabels = null;
         }
     }
 }
