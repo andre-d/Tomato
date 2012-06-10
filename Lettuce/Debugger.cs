@@ -117,6 +117,7 @@ namespace Lettuce
                 checkBoxOnFire.Checked = CPU.IsOnFire;
                 rawMemoryDisplay.Invalidate();
                 disassemblyDisplay1.Invalidate();
+                propertyGrid1.SelectedObject = propertyGrid1.SelectedObject; // Forces update, intentionally redundant
                 if (CPU.IsRunning)
                     DisableAll();
                 else

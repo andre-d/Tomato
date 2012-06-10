@@ -53,6 +53,7 @@
     <Compile Include="Hardware\GenericKeyboard.cs" />
     <Compile Include="Hardware\LEM1802.cs" />
     <Compile Include="Hardware\SCP2000.cs" />
+    <Compile Include="HexTypeEditor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -9,6 +9,7 @@ using System.Reflection;
 using System.Threading;
 using System.Runtime.InteropServices;
 using System.ComponentModel;
+using System.Drawing.Design;
 
 namespace Tomato.Hardware
 {
@@ -54,11 +55,17 @@ namespace Tomato.Hardware
         private bool BlinkOn = true;
 
         [Category("Device Status")]
+        [TypeConverter(typeof(HexTypeEditor))]
         public ushort ScreenMap { get; set; }
+
         [Category("Device Status")]
+        [TypeConverter(typeof(HexTypeEditor))]
         public ushort FontMap { get; set; }
+
         [Category("Device Status")]
+        [TypeConverter(typeof(HexTypeEditor))]
         public ushort PaletteMap { get; set; }
+
         [Category("Device Status")]
         public ushort BorderColorValue { get; set; }
 
@@ -115,18 +122,21 @@ namespace Tomato.Hardware
         }
 
         [Category("Device Information")]
+        [TypeConverter(typeof(HexTypeEditor))]
         public override uint DeviceID
         {
             get { return 0x7349f615; }
         }
 
         [Category("Device Information")]
+        [TypeConverter(typeof(HexTypeEditor))]
         public override uint ManufacturerID
         {
             get { return 0x1c6c8b36; }
         }
 
         [Category("Device Information")]
+        [TypeConverter(typeof(HexTypeEditor))]
         public override ushort Version
         {
             get { return 0x1802; }

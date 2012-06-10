@@ -40,18 +40,21 @@ namespace Tomato.Hardware
         }
 
         [Category("Device Information")]
+        [TypeConverter(typeof(HexTypeEditor))]
         public override uint DeviceID
         {
             get { return 0x30cf7406; }
         }
 
         [Category("Device Information")]
+        [TypeConverter(typeof(HexTypeEditor))]
         public override uint ManufacturerID
         {
             get { return 0x0; }
         }
 
         [Category("Device Information")]
+        [TypeConverter(typeof(HexTypeEditor))]
         public override ushort Version
         {
             get { return 1; }
