@@ -3,31 +3,40 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading;
+using System.ComponentModel;
 
 namespace Tomato.Hardware
 {
     public class GenericClock : Device
     {
+        [Category("Device Status")]
         public ushort InterruptMessage { get; set; }
+        [Category("Device Status")]
         public ushort Frequency { get; set; }
+        [Browsable(false)]
         public Timer Clock { get; set; }
+        [Category("Device Status")]
         public ushort ElapsedTicks { get; set; }
 
+        [Category("Device Information")]
         public override uint DeviceID
         {
             get { return 0x12d0b402; }
         }
 
+        [Category("Device Information")]
         public override uint ManufacturerID
         {
             get { return 0x0; }
         }
 
+        [Category("Device Information")]
         public override ushort Version
         {
             get { return 1; }
         }
 
+        [Browsable(false)]
         public override string FriendlyName
         {
             get { return "Generic Clock (compatible)"; }

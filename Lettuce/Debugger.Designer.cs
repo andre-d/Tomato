@@ -34,10 +34,7 @@
             Tomato.DCPU dcpu3 = new Tomato.DCPU();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Debugger));
             this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.stackDisplay = new Lettuce.MemoryDisplay();
             this.label18 = new System.Windows.Forms.Label();
-            this.disassemblyDisplay1 = new Lettuce.DisassemblyDisplay();
-            this.rawMemoryDisplay = new Lettuce.MemoryDisplay();
             this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
@@ -73,10 +70,6 @@
             this.label3 = new System.Windows.Forms.Label();
             this.checkBoxRunning = new System.Windows.Forms.CheckBox();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
-            this.buttonEditDevice = new System.Windows.Forms.Button();
-            this.labelVersion = new System.Windows.Forms.Label();
-            this.labelManufacturer = new System.Windows.Forms.Label();
-            this.labelHardwareID = new System.Windows.Forms.Label();
             this.listBoxConnectedDevices = new System.Windows.Forms.ListBox();
             this.label17 = new System.Windows.Forms.Label();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
@@ -99,6 +92,10 @@
             this.memoryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.gotoAddressToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.resetToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.propertyGrid1 = new System.Windows.Forms.PropertyGrid();
+            this.stackDisplay = new Lettuce.MemoryDisplay();
+            this.disassemblyDisplay1 = new Lettuce.DisassemblyDisplay();
+            this.rawMemoryDisplay = new Lettuce.MemoryDisplay();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -118,22 +115,10 @@
             this.groupBox1.Controls.Add(this.label1);
             this.groupBox1.Location = new System.Drawing.Point(12, 27);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(589, 563);
+            this.groupBox1.Size = new System.Drawing.Size(585, 563);
             this.groupBox1.TabIndex = 0;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Memory";
-            // 
-            // stackDisplay
-            // 
-            this.stackDisplay.AsStack = true;
-            this.stackDisplay.CPU = dcpu1;
-            this.stackDisplay.Font = new System.Drawing.Font("Courier New", 12F);
-            this.stackDisplay.Location = new System.Drawing.Point(8, 32);
-            this.stackDisplay.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
-            this.stackDisplay.Name = "stackDisplay";
-            this.stackDisplay.SelectedAddress = ((ushort)(0));
-            this.stackDisplay.Size = new System.Drawing.Size(113, 238);
-            this.stackDisplay.TabIndex = 7;
             // 
             // label18
             // 
@@ -143,36 +128,6 @@
             this.label18.Size = new System.Drawing.Size(35, 13);
             this.label18.TabIndex = 6;
             this.label18.Text = "Stack";
-            // 
-            // disassemblyDisplay1
-            // 
-            this.disassemblyDisplay1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.disassemblyDisplay1.CPU = dcpu2;
-            this.disassemblyDisplay1.EnableUpdates = true;
-            this.disassemblyDisplay1.EndAddress = ((ushort)(0));
-            this.disassemblyDisplay1.Font = new System.Drawing.Font("Courier New", 12F);
-            this.disassemblyDisplay1.Location = new System.Drawing.Point(6, 289);
-            this.disassemblyDisplay1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
-            this.disassemblyDisplay1.Name = "disassemblyDisplay1";
-            this.disassemblyDisplay1.SelectedAddress = ((ushort)(0));
-            this.disassemblyDisplay1.Size = new System.Drawing.Size(574, 264);
-            this.disassemblyDisplay1.TabIndex = 5;
-            // 
-            // rawMemoryDisplay
-            // 
-            this.rawMemoryDisplay.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.rawMemoryDisplay.AsStack = false;
-            this.rawMemoryDisplay.CPU = dcpu3;
-            this.rawMemoryDisplay.Font = new System.Drawing.Font("Courier New", 12F);
-            this.rawMemoryDisplay.Location = new System.Drawing.Point(129, 32);
-            this.rawMemoryDisplay.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
-            this.rawMemoryDisplay.Name = "rawMemoryDisplay";
-            this.rawMemoryDisplay.SelectedAddress = ((ushort)(0));
-            this.rawMemoryDisplay.Size = new System.Drawing.Size(451, 238);
-            this.rawMemoryDisplay.TabIndex = 4;
             // 
             // label2
             // 
@@ -229,7 +184,7 @@
             this.groupBox2.Controls.Add(this.label4);
             this.groupBox2.Controls.Add(this.label3);
             this.groupBox2.Controls.Add(this.checkBoxRunning);
-            this.groupBox2.Location = new System.Drawing.Point(607, 27);
+            this.groupBox2.Location = new System.Drawing.Point(603, 27);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Size = new System.Drawing.Size(167, 278);
             this.groupBox2.TabIndex = 1;
@@ -539,64 +494,21 @@
             // 
             this.groupBox3.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.groupBox3.Controls.Add(this.buttonEditDevice);
-            this.groupBox3.Controls.Add(this.labelVersion);
-            this.groupBox3.Controls.Add(this.labelManufacturer);
-            this.groupBox3.Controls.Add(this.labelHardwareID);
             this.groupBox3.Controls.Add(this.listBoxConnectedDevices);
             this.groupBox3.Controls.Add(this.label17);
-            this.groupBox3.Location = new System.Drawing.Point(607, 311);
+            this.groupBox3.Location = new System.Drawing.Point(603, 311);
             this.groupBox3.Name = "groupBox3";
             this.groupBox3.Size = new System.Drawing.Size(167, 279);
             this.groupBox3.TabIndex = 2;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Hardware";
             // 
-            // buttonEditDevice
-            // 
-            this.buttonEditDevice.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonEditDevice.Location = new System.Drawing.Point(9, 246);
-            this.buttonEditDevice.Name = "buttonEditDevice";
-            this.buttonEditDevice.Size = new System.Drawing.Size(152, 23);
-            this.buttonEditDevice.TabIndex = 5;
-            this.buttonEditDevice.Text = "Edit Device";
-            this.buttonEditDevice.UseVisualStyleBackColor = true;
-            this.buttonEditDevice.Click += new System.EventHandler(this.buttonEditDevice_Click);
-            // 
-            // labelVersion
-            // 
-            this.labelVersion.AutoSize = true;
-            this.labelVersion.Location = new System.Drawing.Point(6, 182);
-            this.labelVersion.Name = "labelVersion";
-            this.labelVersion.Size = new System.Drawing.Size(45, 13);
-            this.labelVersion.TabIndex = 4;
-            this.labelVersion.Text = "Version:";
-            // 
-            // labelManufacturer
-            // 
-            this.labelManufacturer.AutoSize = true;
-            this.labelManufacturer.Location = new System.Drawing.Point(6, 169);
-            this.labelManufacturer.Name = "labelManufacturer";
-            this.labelManufacturer.Size = new System.Drawing.Size(73, 13);
-            this.labelManufacturer.TabIndex = 3;
-            this.labelManufacturer.Text = "Manufacturer:";
-            // 
-            // labelHardwareID
-            // 
-            this.labelHardwareID.AutoSize = true;
-            this.labelHardwareID.Location = new System.Drawing.Point(6, 156);
-            this.labelHardwareID.Name = "labelHardwareID";
-            this.labelHardwareID.Size = new System.Drawing.Size(73, 13);
-            this.labelHardwareID.TabIndex = 2;
-            this.labelHardwareID.Text = "Hardware ID: ";
-            // 
             // listBoxConnectedDevices
             // 
             this.listBoxConnectedDevices.FormattingEnabled = true;
             this.listBoxConnectedDevices.Location = new System.Drawing.Point(6, 32);
             this.listBoxConnectedDevices.Name = "listBoxConnectedDevices";
-            this.listBoxConnectedDevices.Size = new System.Drawing.Size(155, 121);
+            this.listBoxConnectedDevices.Size = new System.Drawing.Size(155, 238);
             this.listBoxConnectedDevices.TabIndex = 1;
             this.listBoxConnectedDevices.SelectedIndexChanged += new System.EventHandler(this.listBoxConnectedDevices_SelectedIndexChanged);
             // 
@@ -617,7 +529,7 @@
             this.memoryToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(783, 24);
+            this.menuStrip1.Size = new System.Drawing.Size(992, 24);
             this.menuStrip1.TabIndex = 3;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -635,14 +547,14 @@
             // 
             this.stopToolStripMenuItem.Name = "stopToolStripMenuItem";
             this.stopToolStripMenuItem.ShortcutKeyDisplayString = "F5";
-            this.stopToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.stopToolStripMenuItem.Size = new System.Drawing.Size(117, 22);
             this.stopToolStripMenuItem.Text = "Stop";
             this.stopToolStripMenuItem.Click += new System.EventHandler(this.checkBoxRunning_CheckedChanged);
             // 
             // resetToolStripMenuItem
             // 
             this.resetToolStripMenuItem.Name = "resetToolStripMenuItem";
-            this.resetToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.resetToolStripMenuItem.Size = new System.Drawing.Size(117, 22);
             this.resetToolStripMenuItem.Text = "Reset";
             this.resetToolStripMenuItem.Click += new System.EventHandler(this.resetToolStripMenuItem_Click);
             // 
@@ -655,41 +567,41 @@
             this.toolStripMenuItem5,
             this.customToolStripMenuItem});
             this.speedToolStripMenuItem.Name = "speedToolStripMenuItem";
-            this.speedToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.speedToolStripMenuItem.Size = new System.Drawing.Size(117, 22);
             this.speedToolStripMenuItem.Text = "Speed";
             // 
             // toolStripMenuItem2
             // 
             this.toolStripMenuItem2.Name = "toolStripMenuItem2";
-            this.toolStripMenuItem2.Size = new System.Drawing.Size(152, 22);
+            this.toolStripMenuItem2.Size = new System.Drawing.Size(116, 22);
             this.toolStripMenuItem2.Text = "50%";
             this.toolStripMenuItem2.Click += new System.EventHandler(this.toolStripMenuItem2_Click);
             // 
             // toolStripMenuItem3
             // 
             this.toolStripMenuItem3.Name = "toolStripMenuItem3";
-            this.toolStripMenuItem3.Size = new System.Drawing.Size(152, 22);
+            this.toolStripMenuItem3.Size = new System.Drawing.Size(116, 22);
             this.toolStripMenuItem3.Text = "100%";
             this.toolStripMenuItem3.Click += new System.EventHandler(this.toolStripMenuItem3_Click);
             // 
             // toolStripMenuItem4
             // 
             this.toolStripMenuItem4.Name = "toolStripMenuItem4";
-            this.toolStripMenuItem4.Size = new System.Drawing.Size(152, 22);
+            this.toolStripMenuItem4.Size = new System.Drawing.Size(116, 22);
             this.toolStripMenuItem4.Text = "200%";
             this.toolStripMenuItem4.Click += new System.EventHandler(this.toolStripMenuItem4_Click);
             // 
             // toolStripMenuItem5
             // 
             this.toolStripMenuItem5.Name = "toolStripMenuItem5";
-            this.toolStripMenuItem5.Size = new System.Drawing.Size(152, 22);
+            this.toolStripMenuItem5.Size = new System.Drawing.Size(116, 22);
             this.toolStripMenuItem5.Text = "1000%";
             this.toolStripMenuItem5.Click += new System.EventHandler(this.toolStripMenuItem5_Click);
             // 
             // customToolStripMenuItem
             // 
             this.customToolStripMenuItem.Name = "customToolStripMenuItem";
-            this.customToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.customToolStripMenuItem.Size = new System.Drawing.Size(116, 22);
             this.customToolStripMenuItem.Text = "Custom";
             this.customToolStripMenuItem.Click += new System.EventHandler(this.customToolStripMenuItem_Click);
             // 
@@ -773,15 +685,69 @@
             this.resetToolStripMenuItem1.Text = "Reset";
             this.resetToolStripMenuItem1.Click += new System.EventHandler(this.resetToolStripMenuItem1_Click);
             // 
+            // propertyGrid1
+            // 
+            this.propertyGrid1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.propertyGrid1.Location = new System.Drawing.Point(776, 27);
+            this.propertyGrid1.Name = "propertyGrid1";
+            this.propertyGrid1.Size = new System.Drawing.Size(204, 563);
+            this.propertyGrid1.TabIndex = 4;
+            this.propertyGrid1.PropertyValueChanged += new System.Windows.Forms.PropertyValueChangedEventHandler(this.propertyGrid1_PropertyValueChanged);
+            // 
+            // stackDisplay
+            // 
+            this.stackDisplay.AsStack = true;
+            this.stackDisplay.CPU = dcpu1;
+            this.stackDisplay.Font = new System.Drawing.Font("Courier New", 12F);
+            this.stackDisplay.Location = new System.Drawing.Point(8, 32);
+            this.stackDisplay.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
+            this.stackDisplay.Name = "stackDisplay";
+            this.stackDisplay.SelectedAddress = ((ushort)(0));
+            this.stackDisplay.Size = new System.Drawing.Size(113, 238);
+            this.stackDisplay.TabIndex = 7;
+            // 
+            // disassemblyDisplay1
+            // 
+            this.disassemblyDisplay1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.disassemblyDisplay1.CPU = dcpu2;
+            this.disassemblyDisplay1.EnableUpdates = true;
+            this.disassemblyDisplay1.EndAddress = ((ushort)(0));
+            this.disassemblyDisplay1.Font = new System.Drawing.Font("Courier New", 12F);
+            this.disassemblyDisplay1.Location = new System.Drawing.Point(6, 289);
+            this.disassemblyDisplay1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.disassemblyDisplay1.Name = "disassemblyDisplay1";
+            this.disassemblyDisplay1.SelectedAddress = ((ushort)(0));
+            this.disassemblyDisplay1.Size = new System.Drawing.Size(570, 264);
+            this.disassemblyDisplay1.TabIndex = 5;
+            // 
+            // rawMemoryDisplay
+            // 
+            this.rawMemoryDisplay.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.rawMemoryDisplay.AsStack = false;
+            this.rawMemoryDisplay.CPU = dcpu3;
+            this.rawMemoryDisplay.Font = new System.Drawing.Font("Courier New", 12F);
+            this.rawMemoryDisplay.Location = new System.Drawing.Point(129, 32);
+            this.rawMemoryDisplay.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
+            this.rawMemoryDisplay.Name = "rawMemoryDisplay";
+            this.rawMemoryDisplay.SelectedAddress = ((ushort)(0));
+            this.rawMemoryDisplay.Size = new System.Drawing.Size(447, 238);
+            this.rawMemoryDisplay.TabIndex = 4;
+            // 
             // Debugger
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(783, 602);
+            this.ClientSize = new System.Drawing.Size(992, 602);
+            this.Controls.Add(this.propertyGrid1);
             this.Controls.Add(this.groupBox3);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.menuStrip1);
+            this.DoubleBuffered = true;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "Debugger";
@@ -837,10 +803,6 @@
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.CheckBox checkBoxRunning;
         private System.Windows.Forms.GroupBox groupBox3;
-        private System.Windows.Forms.Button buttonEditDevice;
-        private System.Windows.Forms.Label labelVersion;
-        private System.Windows.Forms.Label labelManufacturer;
-        private System.Windows.Forms.Label labelHardwareID;
         private System.Windows.Forms.ListBox listBoxConnectedDevices;
         private System.Windows.Forms.Label label17;
         private System.Windows.Forms.CheckBox checkBoxOnFire;
@@ -868,6 +830,7 @@
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem4;
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem5;
         private System.Windows.Forms.ToolStripMenuItem customToolStripMenuItem;
+        private System.Windows.Forms.PropertyGrid propertyGrid1;
 
     }
 }

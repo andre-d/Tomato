@@ -8,6 +8,7 @@ using System.IO;
 using System.Reflection;
 using System.Threading;
 using System.Runtime.InteropServices;
+using System.ComponentModel;
 
 namespace Tomato.Hardware
 {
@@ -36,16 +37,32 @@ namespace Tomato.Hardware
             BlinkOn = !BlinkOn;
         }
 
-        public const int Width = 128, Height = 96, CharWidth = 4, CharHeight = 8;
+        [Category("Device Information")]
+        public const int Width = 128;
+        [Category("Device Information")]
+        public const int Height = 96;
+        [Category("Device Information")]
+        public const int CharWidth = 4;
+        [Category("Device Information")]
+        public const int CharHeight = 8;
         /// <summary>
         /// The rate at which blinking characters should blink
         /// </summary>
+        [Browsable(false)]
         public static int BlinkRate = 1000;
+        [Browsable(false)]
         private bool BlinkOn = true;
 
-        public ushort ScreenMap, FontMap, PaletteMap;
-        public ushort BorderColorValue = 0;
+        [Category("Device Status")]
+        public ushort ScreenMap { get; set; }
+        [Category("Device Status")]
+        public ushort FontMap { get; set; }
+        [Category("Device Status")]
+        public ushort PaletteMap { get; set; }
+        [Category("Device Status")]
+        public ushort BorderColorValue { get; set; }
 
+        [Browsable(false)]
         public Color BorderColor
         {
             get
@@ -57,6 +74,7 @@ namespace Tomato.Hardware
         /// <summary>
         /// Gets an image of the screen, without the border.
         /// </summary>
+        [Browsable(false)]
         public unsafe Bitmap ScreenImage
         {
             get
@@ -96,21 +114,25 @@ namespace Tomato.Hardware
             }
         }
 
+        [Category("Device Information")]
         public override uint DeviceID
         {
             get { return 0x7349f615; }
         }
 
+        [Category("Device Information")]
         public override uint ManufacturerID
         {
             get { return 0x1c6c8b36; }
         }
 
+        [Category("Device Information")]
         public override ushort Version
         {
             get { return 0x1802; }
         }
 
+        [Browsable(false)]
         public override string FriendlyName
         {
             get { return "LEM 1802 Screen"; }

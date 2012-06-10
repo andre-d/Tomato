@@ -173,9 +173,7 @@ namespace Lettuce
             if (listBoxConnectedDevices.SelectedIndex == -1)
                 return;
             Device selected = CPU.ConnectedDevices[listBoxConnectedDevices.SelectedIndex];
-            labelHardwareID.Text = "Hardware ID: " + GetHexString(selected.DeviceID, 8);
-            labelManufacturer.Text = "Manufacturer: " + GetHexString(selected.ManufacturerID, 8);
-            labelVersion.Text = "Version: " + GetHexString(selected.Version, 4);
+            propertyGrid1.SelectedObject = selected;
         }
 
         private void checkBoxRunning_CheckedChanged(object sender, EventArgs e)
@@ -382,18 +380,6 @@ namespace Lettuce
             Device d = CPU.ConnectedDevices[listBoxConnectedDevices.SelectedIndex];
             CPU.IsRunning = false;
             ResetLayout();
-            foreach (Type type in DeviceControllers)
-            {
-                DeviceController dc = (DeviceController)Activator.CreateInstance(type);
-                if (dc.TargetType == d.GetType())
-                {
-                    dc.Device = d;
-                    dc.CPU = CPU;
-                    dc.ShowDialog();
-                    return;
-                }
-            }
-            MessageBox.Show("No device controller for this kind of device can be found.");
         }
 
         public static Dictionary<ushort, string> KnownLabels;
@@ -491,6 +477,12 @@ namespace Lettuce
             csf.Value = CPU.ClockSpeed;
             csf.ShowDialog();
             CPU.ClockSpeed = csf.Value;
+        }
+
+        private void propertyGrid1_PropertyValueChanged(object s, PropertyValueChangedEventArgs e)
+        {
+            CPU.IsRunning = false;
+            ResetLayout();
         }
     }
 }

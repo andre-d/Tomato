@@ -2,29 +2,36 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.ComponentModel;
 
 namespace Tomato.Hardware
 {
     public class SCP2000 : Device
     {
+        [Category("Device Status")]
         public uint UnitToSkip { get; set; }
+        [Category("Device Status")]
         public ushort SkipUnit { get; set; }
 
+        [Category("Device Information")]
         public override uint DeviceID
         {
             get { return 0x40e41d9d; }
         }
 
+        [Category("Device Information")]
         public override uint ManufacturerID
         {
             get { return 0x1c6c8b36; }
         }
 
+        [Category("Device Information")]
         public override ushort Version
         {
             get { return 0x005e; }
         }
 
+        [Browsable(false)]
         public override string FriendlyName
         {
             get { return "Suspension Chamber 2000"; }

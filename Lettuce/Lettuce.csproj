@@ -91,12 +91,6 @@
     <Compile Include="DeviceController.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="HardwareControllers\LEM1802Controller.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="HardwareControllers\LEM1802Controller.Designer.cs">
-      <DependentUpon>LEM1802Controller.cs</DependentUpon>
-    </Compile>
     <Compile Include="LEM1802Window.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -140,9 +134,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="HardwareConfiguration.resx">
       <DependentUpon>HardwareConfiguration.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="HardwareControllers\LEM1802Controller.resx">
-      <DependentUpon>LEM1802Controller.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="LEM1802Window.resx">
       <DependentUpon>LEM1802Window.cs</DependentUpon>

@@ -3,13 +3,17 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using System.ComponentModel;
 
 namespace Tomato.Hardware
 {
     public class GenericKeyboard : Device
     {
+        [Category("Device Status")]
         public ushort InterruptMessage { get; set; }
+        [Browsable(false)]
         public Queue<ushort> Buffer { get; set; }
+        [Browsable(false)]
         public List<ushort> PressedKeys { get; set; }
         private Dictionary<Keys, string> ExtraMappings { get; set; }
 
@@ -35,21 +39,25 @@ namespace Tomato.Hardware
             ExtraMappings.Add(Keys.Divide, "/");
         }
 
+        [Category("Device Information")]
         public override uint DeviceID
         {
             get { return 0x30cf7406; }
         }
 
+        [Category("Device Information")]
         public override uint ManufacturerID
         {
             get { return 0x0; }
         }
 
+        [Category("Device Information")]
         public override ushort Version
         {
             get { return 1; }
         }
 
+        [Browsable(false)]
         public override string FriendlyName
         {
             get { return "Generic Keyboard (compatible)"; }
