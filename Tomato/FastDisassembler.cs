@@ -5,9 +5,8 @@ using System.Text;
 using System.IO;
 using System.Reflection;
 using System.Globalization;
-using Lettuce;
 
-namespace Inorganic
+namespace Tomato
 {
     public class FastDisassembler
     {
@@ -19,9 +18,9 @@ namespace Inorganic
         private ushort[] Data;
         private Dictionary<ushort, string> KnownLabels;
 
-        public FastDisassembler()
+        public FastDisassembler(Dictionary<ushort, string> KnownLabels)
         {
-            KnownLabels = new Dictionary<ushort,string>(Debugger.KnownLabels);
+            this.KnownLabels = new Dictionary<ushort,string>(KnownLabels);
         }
 
         #endregion
@@ -42,7 +41,7 @@ namespace Inorganic
                 {
                     output.Add(new CodeEntry()
                     {
-                        Code = Debugger.KnownLabels[PC] + ":",
+                        Code = KnownLabels[PC] + ":",
                         IsLabel = true,
                         Address = PC
                     });
@@ -109,6 +108,8 @@ namespace Inorganic
                     return "IAS";
                 case 0x0B: // RFI a
                     return "RFI";
+                case 0x0C: // IAQ a
+                    return "IAQ";
                 case 0x10: // HWN a
                     return "HWN";
                 case 0x11: // HWQ a

@@ -39,7 +39,7 @@
             this.label1 = new System.Windows.Forms.Label();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.checkBoxOnFire = new System.Windows.Forms.CheckBox();
-            this.label16 = new System.Windows.Forms.Label();
+            this.labelQueuedInterrupts = new System.Windows.Forms.Label();
             this.buttonStepOver = new System.Windows.Forms.Button();
             this.buttonStepInto = new System.Windows.Forms.Button();
             this.checkBoxInterruptQueue = new System.Windows.Forms.CheckBox();
@@ -77,6 +77,7 @@
             this.stopToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.resetToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.speedToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.loadToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem3 = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem4 = new System.Windows.Forms.ToolStripMenuItem();
@@ -96,6 +97,7 @@
             this.stackDisplay = new Lettuce.MemoryDisplay();
             this.disassemblyDisplay1 = new Lettuce.DisassemblyDisplay();
             this.rawMemoryDisplay = new Lettuce.MemoryDisplay();
+            this.reloadToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -154,7 +156,7 @@
             this.groupBox2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBox2.Controls.Add(this.checkBoxOnFire);
-            this.groupBox2.Controls.Add(this.label16);
+            this.groupBox2.Controls.Add(this.labelQueuedInterrupts);
             this.groupBox2.Controls.Add(this.buttonStepOver);
             this.groupBox2.Controls.Add(this.buttonStepInto);
             this.groupBox2.Controls.Add(this.checkBoxInterruptQueue);
@@ -202,14 +204,14 @@
             this.checkBoxOnFire.UseVisualStyleBackColor = true;
             this.checkBoxOnFire.CheckedChanged += new System.EventHandler(this.checkBoxOnFire_CheckedChanged);
             // 
-            // label16
+            // labelQueuedInterrupts
             // 
-            this.label16.AutoSize = true;
-            this.label16.Location = new System.Drawing.Point(6, 213);
-            this.label16.Name = "label16";
-            this.label16.Size = new System.Drawing.Size(104, 13);
-            this.label16.TabIndex = 29;
-            this.label16.Text = "Queued Interrupts: 0";
+            this.labelQueuedInterrupts.AutoSize = true;
+            this.labelQueuedInterrupts.Location = new System.Drawing.Point(6, 213);
+            this.labelQueuedInterrupts.Name = "labelQueuedInterrupts";
+            this.labelQueuedInterrupts.Size = new System.Drawing.Size(104, 13);
+            this.labelQueuedInterrupts.TabIndex = 29;
+            this.labelQueuedInterrupts.Text = "Queued Interrupts: 0";
             // 
             // buttonStepOver
             // 
@@ -240,6 +242,7 @@
             this.checkBoxInterruptQueue.TabIndex = 26;
             this.checkBoxInterruptQueue.Text = "Interrupt Queue";
             this.checkBoxInterruptQueue.UseVisualStyleBackColor = true;
+            this.checkBoxInterruptQueue.CheckedChanged += new System.EventHandler(this.checkBoxInterruptQueue_CheckedChanged);
             // 
             // textBoxRegisterPC
             // 
@@ -538,7 +541,8 @@
             this.emulationToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.stopToolStripMenuItem,
             this.resetToolStripMenuItem,
-            this.speedToolStripMenuItem});
+            this.speedToolStripMenuItem,
+            this.loadToolStripMenuItem});
             this.emulationToolStripMenuItem.Name = "emulationToolStripMenuItem";
             this.emulationToolStripMenuItem.Size = new System.Drawing.Size(73, 20);
             this.emulationToolStripMenuItem.Text = "Emulation";
@@ -579,6 +583,8 @@
             // 
             // toolStripMenuItem3
             // 
+            this.toolStripMenuItem3.Checked = true;
+            this.toolStripMenuItem3.CheckState = System.Windows.Forms.CheckState.Checked;
             this.toolStripMenuItem3.Name = "toolStripMenuItem3";
             this.toolStripMenuItem3.Size = new System.Drawing.Size(116, 22);
             this.toolStripMenuItem3.Text = "100%";
@@ -604,6 +610,13 @@
             this.customToolStripMenuItem.Size = new System.Drawing.Size(116, 22);
             this.customToolStripMenuItem.Text = "Custom";
             this.customToolStripMenuItem.Click += new System.EventHandler(this.customToolStripMenuItem_Click);
+
+            // loadToolStripMenuItem
+            //
+            this.loadToolStripMenuItem.Name = "loadToolStripMenuItem";
+            this.loadToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.loadToolStripMenuItem.Text = "Load";
+            this.loadToolStripMenuItem.Click += new System.EventHandler(this.loadToolStripMenuItem_Click);
             // 
             // debugToolStripMenuItem
             // 
@@ -611,7 +624,8 @@
             this.stepIntoToolStripMenuItem,
             this.stepOverToolStripMenuItem,
             this.loadListingToolStripMenuItem,
-            this.defineValueToolStripMenuItem});
+            this.defineValueToolStripMenuItem,
+            this.reloadToolStripMenuItem});
             this.debugToolStripMenuItem.Name = "debugToolStripMenuItem";
             this.debugToolStripMenuItem.Size = new System.Drawing.Size(54, 20);
             this.debugToolStripMenuItem.Text = "Debug";
@@ -660,6 +674,14 @@
             this.defineValueToolStripMenuItem.Size = new System.Drawing.Size(144, 22);
             this.defineValueToolStripMenuItem.Text = "Define Value";
             this.defineValueToolStripMenuItem.Click += new System.EventHandler(this.defineValueToolStripMenuItem_Click);
+            //
+            // reloadToolStripMenuItem
+            //
+            this.reloadToolStripMenuItem.Name = "reloadToolStripMenuItem";
+            this.reloadToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.reloadToolStripMenuItem.Text = "Reload";
+            this.reloadToolStripMenuItem.Click += new System.EventHandler(this.reloadToolStripMenuItem_Click);
+            //
             // 
             // memoryToolStripMenuItem
             // 
@@ -772,7 +794,7 @@
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.GroupBox groupBox2;
-        private System.Windows.Forms.Label label16;
+        private System.Windows.Forms.Label labelQueuedInterrupts;
         private System.Windows.Forms.Button buttonStepOver;
         private System.Windows.Forms.Button buttonStepInto;
         private System.Windows.Forms.CheckBox checkBoxInterruptQueue;
@@ -831,6 +853,7 @@
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem5;
         private System.Windows.Forms.ToolStripMenuItem customToolStripMenuItem;
         private System.Windows.Forms.PropertyGrid propertyGrid1;
-
+        private System.Windows.Forms.ToolStripMenuItem loadToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem reloadToolStripMenuItem;
     }
 }

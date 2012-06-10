@@ -34,7 +34,7 @@ namespace Lettuce
             this.rawMemoryDisplay.CPU = this.CPU;
             this.stackDisplay.CPU = this.CPU;
             this.disassemblyDisplay1.CPU = this.CPU;
-            foreach (Device d in CPU.ConnectedDevices)
+            foreach (Device d in CPU.Devices)
                 listBoxConnectedDevices.Items.Add(d.FriendlyName);
             // Load device controllers
             DeviceControllers = new List<Type>();
@@ -52,7 +52,7 @@ namespace Lettuce
         {
             if (stepOverEnabled)
             {
-                CPU.Breakpoints.Remove(CPU.PC);
+                CPU.Breakpoints.Remove(CPU.Breakpoints.Where(b => b.Address == CPU.PC).First());
                 e.ContinueExecution = false;
                 (sender as DCPU).IsRunning = false;
                 disassemblyDisplay1.EnableUpdates = true;
@@ -113,6 +113,7 @@ namespace Lettuce
                 textBoxRegisterIA.Text = GetHexString(CPU.IA, 4);
                 checkBoxRunning.Checked = CPU.IsRunning;
                 checkBoxInterruptQueue.Checked = CPU.InterruptQueueEnabled;
+                labelQueuedInterrupts.Text = "Queued Interrupts: " + CPU.InterruptQueue.Count.ToString();
                 checkBoxOnFire.Checked = CPU.IsOnFire;
                 rawMemoryDisplay.Invalidate();
                 disassemblyDisplay1.Invalidate();
@@ -172,7 +173,7 @@ namespace Lettuce
         {
             if (listBoxConnectedDevices.SelectedIndex == -1)
                 return;
-            Device selected = CPU.ConnectedDevices[listBoxConnectedDevices.SelectedIndex];
+            Device selected = CPU.Devices[listBoxConnectedDevices.SelectedIndex];
             propertyGrid1.SelectedObject = selected;
         }
 
@@ -323,7 +324,7 @@ namespace Lettuce
         {
             // Set a breakpoint ahead of PC
             ushort length = CPU.InstructionLength(CPU.PC);
-            CPU.Breakpoints.Add((ushort)(CPU.PC + length));
+            CPU.Breakpoints.Add(new Breakpoint() { Address = (ushort)(CPU.PC + length) });
             stepOverAddress = (ushort)(CPU.PC + length);
             stepOverEnabled = true;
             disassemblyDisplay1.EnableUpdates = false;
@@ -377,7 +378,7 @@ namespace Lettuce
         {
             if (listBoxConnectedDevices.SelectedIndex == -1)
                 return;
-            Device d = CPU.ConnectedDevices[listBoxConnectedDevices.SelectedIndex];
+            Device d = CPU.Devices[listBoxConnectedDevices.SelectedIndex];
             CPU.IsRunning = false;
             ResetLayout();
         }
@@ -389,11 +390,12 @@ namespace Lettuce
         {
             // Load organic listing
             OpenFileDialog ofd = new OpenFileDialog();
-            ofd.Filter = "Listing files (*.lst)|*.lst|All files (*.*)|*.*";
+            ofd.Filter = "Listing files (*.lst)|*.lst|Text files (*.txt)|*.txt|All files (*.*)|*.*";
             ofd.FileName = "";
             if (ofd.ShowDialog() != DialogResult.OK)
                 return;
             LoadOrganicListing(ofd.FileName);
+            Lettuce.Program.lastlistingFilepath = ofd.FileName;
             ResetLayout();
         }
 
@@ -405,6 +407,7 @@ namespace Lettuce
                 KnownLabels = new Dictionary<ushort, string>();
             StreamReader reader = new StreamReader(file);
             string listing = reader.ReadToEnd();
+            Program.lastlistingFilepath = file;
             reader.Close();
             string[] lines = listing.Replace("\r", "").Split('\n');
             foreach (var _line in lines)
@@ -453,26 +456,41 @@ namespace Lettuce
 
         private void toolStripMenuItem2_Click(object sender, EventArgs e)
         {
+            foreach (var item in speedToolStripMenuItem.DropDownItems)
+                (item as ToolStripMenuItem).Checked = false;
+            (sender as ToolStripMenuItem).Checked = true;
             CPU.ClockSpeed = 50000;
         }
 
         private void toolStripMenuItem3_Click(object sender, EventArgs e)
         {
+            foreach (var item in speedToolStripMenuItem.DropDownItems)
+                (item as ToolStripMenuItem).Checked = false;
+            (sender as ToolStripMenuItem).Checked = true;
             CPU.ClockSpeed = 100000;
         }
 
         private void toolStripMenuItem4_Click(object sender, EventArgs e)
         {
+            foreach (var item in speedToolStripMenuItem.DropDownItems)
+                (item as ToolStripMenuItem).Checked = false;
+            (sender as ToolStripMenuItem).Checked = true;
             CPU.ClockSpeed = 200000;
         }
 
         private void toolStripMenuItem5_Click(object sender, EventArgs e)
         {
+            foreach (var item in speedToolStripMenuItem.DropDownItems)
+                (item as ToolStripMenuItem).Checked = false;
+            (sender as ToolStripMenuItem).Checked = true;
             CPU.ClockSpeed = 1000000;
         }
 
         private void customToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            foreach (var item in speedToolStripMenuItem.DropDownItems)
+                (item as ToolStripMenuItem).Checked = false;
+            (sender as ToolStripMenuItem).Checked = true;
             ClockSpeedForm csf = new ClockSpeedForm();
             csf.Value = CPU.ClockSpeed;
             csf.ShowDialog();
@@ -483,6 +501,77 @@ namespace Lettuce
         {
             CPU.IsRunning = false;
             ResetLayout();
+        }
+
+        private void checkBoxInterruptQueue_CheckedChanged(object sender, EventArgs e)
+        {
+            CPU.InterruptQueueEnabled = !CPU.InterruptQueueEnabled;
+            ResetLayout();
+        }
+        
+        private void loadToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            string binFile = null;
+            bool littleEndian = false;
+            MemoryConfiguration mc = new MemoryConfiguration();
+            if (mc.ShowDialog() == DialogResult.OK)
+            {
+                binFile = mc.FileName;
+                littleEndian = mc.LittleEndian;
+            }
+            if (!string.IsNullOrEmpty(binFile))
+            {
+                // Load binary file
+                List<ushort> data = new List<ushort>();
+                using (Stream stream = File.OpenRead(binFile))
+                {
+                    for (int i = 0; i < stream.Length; i += 2)
+                    {
+                        byte a = (byte)stream.ReadByte();
+                        byte b = (byte)stream.ReadByte();
+                        if (littleEndian)
+                            data.Add((ushort)(a | (b << 8)));
+                        else
+                            data.Add((ushort)(b | (a << 8)));
+                    }
+                }
+                Lettuce.Program.CPU.FlashMemory(data.ToArray());
+            }
+        }
+
+        private void reloadToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            CPU.Reset();
+            CPU.Memory = new ushort[0x10000];
+
+            // Load binary file
+            List<ushort> data = new List<ushort>();
+            if (!string.IsNullOrEmpty(Lettuce.Program.lastbinFilepath))
+            {
+                using (Stream stream = File.OpenRead(Lettuce.Program.lastbinFilepath))
+                {
+                    for (int i = 0; i < stream.Length; i += 2)
+                    {
+                        byte a = (byte)stream.ReadByte();
+                        byte b = (byte)stream.ReadByte();
+                        if (Lettuce.Program.lastlittleEndian)
+                            data.Add((ushort)(a | (b << 8)));
+                        else
+                            data.Add((ushort)(b | (a << 8)));
+                    }
+                }
+            }
+            Lettuce.Program.CPU.FlashMemory(data.ToArray());
+            Clearlisting();
+            if (!string.IsNullOrEmpty(Lettuce.Program.lastlistingFilepath))
+                LoadOrganicListing(Lettuce.Program.lastlistingFilepath);
+            ResetLayout();
+        }
+
+        private void Clearlisting()
+        {
+            KnownCode = new Dictionary<ushort,string>();
+            KnownLabels = new Dictionary<ushort,string>();
         }
     }
 }

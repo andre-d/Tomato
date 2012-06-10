@@ -8,10 +8,12 @@ namespace Tomato
     public class BreakpointEventArgs : EventArgs
     {
         public bool ContinueExecution;
+        public Breakpoint Breakpoint;
 
-        public BreakpointEventArgs()
+        public BreakpointEventArgs(Breakpoint Breakpoint)
         {
             ContinueExecution = false;
+            this.Breakpoint = Breakpoint;
         }
     }
 }

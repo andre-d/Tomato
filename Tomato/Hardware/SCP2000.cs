@@ -71,7 +71,8 @@ namespace Tomato.Hardware
 
         public override void Reset()
         {
-            throw new NotImplementedException();
+            SkipUnit = 0;
+            UnitToSkip = 0;
         }
     }
 }

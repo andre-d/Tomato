@@ -19,6 +19,9 @@ namespace Lettuce
         public static DateTime LastTick;
         public static Debugger debugger;
 
+        public static string lastbinFilepath = "";
+        public static string lastlistingFilepath = "";
+        public static bool lastlittleEndian = false;
         private static System.Threading.Timer timer;
 
         /// <summary>
@@ -121,6 +124,7 @@ namespace Lettuce
             }
             if (!string.IsNullOrEmpty(binFile))
             {
+                lastbinFilepath = binFile;
                 // Load binary file
                 List<ushort> data = new List<ushort>();
                 using (Stream stream = File.OpenRead(binFile))
@@ -150,7 +154,7 @@ namespace Lettuce
             Point screenLocation = new Point();
             screenLocation.Y = debugger.Location.Y + 4;
             screenLocation.X = debugger.Location.X + debugger.Width + 5;
-            foreach (Device d in CPU.ConnectedDevices)
+            foreach (Device d in CPU.Devices)
             {
                 if (d is LEM1802)
                 {

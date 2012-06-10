@@ -2,14 +2,13 @@ Tomato
 ======
 
 Tomato is a library for emulating a DCPU-16.  Also included is Lettuce, which is a GUI front-end for Tomato.  Also also
-included is Bacon, which is an SDP server built on top of Tomato.
+included is Bacon, which is an SDP server built on top of Tomato.  Also also also included is Pickles, a command-line
+debugger built on top of Tomato.
 
 Planned Things
 --------------
 
 * Allow the Lettuce debugger connect to SDP servers like Bacon
-* Fix bugs in Tomato emulation core
-* Live disassembly for Lettuce
 
 How to Use
 ----------
