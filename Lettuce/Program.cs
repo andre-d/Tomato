@@ -20,6 +20,7 @@ namespace Lettuce
         public static Debugger debugger;
 
         public static string lastbinFilepath = "";
+        public static string lastlistingFilepath = "";
         public static bool lastlittleEndian = false;
         private static System.Threading.Timer timer;
 
