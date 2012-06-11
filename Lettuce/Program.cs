@@ -31,6 +31,8 @@ namespace Lettuce
         [STAThread]
         static void Main(string[] args)
         {
+            RuntimeInfo.GatherInfo();
+
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             if (!System.Diagnostics.Debugger.IsAttached)
