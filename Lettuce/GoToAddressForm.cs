@@ -18,6 +18,8 @@ namespace Lettuce
         {
             InitializeComponent();
             textBox1.Text = Debugger.GetHexString(initialValue, 4);
+            textBox1.SelectAll();
+            textBox1.Focus();
         }
 
         private void button1_Click(object sender, EventArgs e)

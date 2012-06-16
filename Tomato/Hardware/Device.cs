@@ -19,5 +19,7 @@ namespace Tomato.Hardware
         /// <returns></returns>
         public abstract int HandleInterrupt();
         public abstract void Reset();
+
+        public bool BreakOnInterrupt { get; set; }
     }
 }

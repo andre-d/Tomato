@@ -18,6 +18,7 @@ namespace Lettuce
         public ushort EndAddress { get; set; }
         private Point MouseLocation;
         private bool IsMouseWithin;
+        //public event EventHandler
 
         public DisassemblyDisplay()
         {

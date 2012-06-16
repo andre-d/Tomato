@@ -438,7 +438,7 @@ namespace Lettuce
                 }
                 else
                 {
-                    if (!line.StartsWith(".dat") && !_line.Contains("                      ")) // .dat directive stuff
+                    if (!_line.Contains("                      ") && !line.ToLower().StartsWith(".")) // .dat directive stuff
                     {
                         if (!KnownCode.ContainsKey(address))
                             KnownCode.Add(address, line);
