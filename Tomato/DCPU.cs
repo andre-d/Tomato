@@ -162,6 +162,8 @@ namespace Tomato
                                     if (opA < Devices.Count)
                                         cycles -= Devices[opA].HandleInterrupt();
                                     break;
+                                default:
+                                    break;
                             }
                             break;
                         case 0x01: // SET b, a

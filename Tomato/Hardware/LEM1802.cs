@@ -198,7 +198,7 @@ namespace Tomato.Hardware
         public override void Reset()
         {
             ScreenMap = FontMap = PaletteMap = 0;
-            BorderColorValue = 0xF;
+            BorderColorValue = 0;
         } 
 
         #region Default Values
