@@ -23,8 +23,9 @@ namespace Lettuce
         public static string lastlistingFilepath = "";
         public static bool lastlittleEndian = false;
         
+        public static Dictionary<Device, Form> Windows = new Dictionary<Device, Form>();
+        
         private static System.Threading.Timer timer;
-        private static Dictionary<Device, LEM1802Window> Windows = new Dictionary<Device, LEM1802Window>();
         private static Point screenLocation = new Point();
 
         /// <summary>

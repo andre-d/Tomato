@@ -70,7 +70,8 @@ namespace Lettuce
 
         void LEM1802Window_FormClosing(object sender, FormClosingEventArgs e)
         {
-            timer.Dispose();
+            this.Hide();
+            e.Cancel = true;
         }
         System.Threading.Timer timer;
 

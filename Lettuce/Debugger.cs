@@ -177,6 +177,19 @@ namespace Lettuce
             Device selected = CPU.Devices[listBoxConnectedDevices.SelectedIndex];
             propertyGrid1.SelectedObject = selected;
         }
+        
+        private void listBoxConnectedDevices_MouseDoubleClick(object sender, EventArgs e)
+        {
+            Device selected = (Device)propertyGrid1.SelectedObject;
+            if (selected != null && Lettuce.Program.Windows.ContainsKey(selected))
+            {
+                Form window = Lettuce.Program.Windows[selected];
+                window.Show();
+                window.BringToFront();
+                window.Focus();
+            }
+            
+        }
 
         private void checkBoxRunning_CheckedChanged(object sender, EventArgs e)
         {

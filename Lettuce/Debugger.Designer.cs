@@ -558,6 +558,7 @@
             this.listBoxConnectedDevices.Size = new System.Drawing.Size(155, 212);
             this.listBoxConnectedDevices.TabIndex = 1;
             this.listBoxConnectedDevices.SelectedIndexChanged += new System.EventHandler(this.listBoxConnectedDevices_SelectedIndexChanged);
+            this.listBoxConnectedDevices.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.listBoxConnectedDevices_MouseDoubleClick);
             // 
             // label17
             // 
