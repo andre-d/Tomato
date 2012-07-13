@@ -15,29 +15,33 @@ namespace Lettuce
 {
     public partial class LEM1802Window : Form
     {
-        public static List<int> AssignedKeyboards;
+        public static List<int> AssignedKeyboards = new List<int>();
         public LEM1802 Screen;
         public GenericKeyboard Keyboard;
         public DCPU CPU;
-        private int ScreenIndex, KeyboardIndex;
-
+        protected int ScreenIndex, KeyboardIndex;
+        
+        protected virtual void InitClientSize() {
+            this.ClientSize = new Size(LEM1802.Width * 4 + 20, LEM1802.Height * 4 + 35);
+        }
+        
         /// <summary>
         /// Assigns a LEM to the window.  If AssignKeyboard is true, it will search for a keyboard
         /// in the given CPU and assign it to this window as well.
         /// </summary>
         public LEM1802Window(LEM1802 LEM1802, DCPU CPU, bool AssignKeyboard)
         {
-            if (AssignedKeyboards == null)
-                AssignedKeyboards = new List<int>();
-
             InitializeComponent();
             // Set up drawing
             this.SetStyle(ControlStyles.AllPaintingInWmPaint |
               ControlStyles.UserPaint | ControlStyles.Opaque, true);
-            this.ClientSize = new Size(LEM1802.Width * 4 + 20, LEM1802.Height * 4 + 35);
+            
             // Take a screen
             Screen = LEM1802;
             ScreenIndex = CPU.Devices.IndexOf(Screen);
+            
+            Keyboard = null;
+            
             // Take a keyboard
             if (AssignKeyboard)
             {
@@ -61,6 +65,7 @@ namespace Lettuce
                     InvalidateAsync();
                 }, null, 16, 16); // 60 Hz
             FormClosing += new FormClosingEventHandler(LEM1802Window_FormClosing);
+            InitClientSize();
         }
 
         void LEM1802Window_FormClosing(object sender, FormClosingEventArgs e)

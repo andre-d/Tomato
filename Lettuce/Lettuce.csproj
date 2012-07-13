@@ -90,6 +90,9 @@
     <Compile Include="LEM1802Window.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="GenericKeyboardWindow.cs">
+      <SubType>LEM1802Window</SubType>
+    </Compile>
     <Compile Include="LEM1802Window.Designer.cs">
       <DependentUpon>LEM1802Window.cs</DependentUpon>
     </Compile>

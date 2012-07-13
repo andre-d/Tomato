@@ -18,11 +18,14 @@ namespace Lettuce
         public static DCPU CPU;
         public static DateTime LastTick;
         public static Debugger debugger;
-
+        
         public static string lastbinFilepath = "";
         public static string lastlistingFilepath = "";
         public static bool lastlittleEndian = false;
+        
         private static System.Threading.Timer timer;
+        private static Dictionary<Device, LEM1802Window> Windows = new Dictionary<Device, LEM1802Window>();
+        private static Point screenLocation = new Point();
 
         /// <summary>
         /// The main entry point for the application.
@@ -153,30 +156,44 @@ namespace Lettuce
             debugger.Location = new Point(0, 0);
             debugger.ResetLayout();
             debugger.Show();
-            Point screenLocation = new Point();
+            
             screenLocation.Y = debugger.Location.Y + 4;
             screenLocation.X = debugger.Location.X + debugger.Width + 5;
+            
+            int keyboardCount = 0;
             foreach (Device d in CPU.Devices)
-            {
                 if (d is LEM1802)
-                {
-                    LEM1802Window window = new LEM1802Window(d as LEM1802, CPU, true);
-                    window.StartPosition = FormStartPosition.Manual;
-                    window.Location = screenLocation;
-                    screenLocation.Y += window.Height + 12;
-                    window.Show();
-                    window.Invalidate();
-                    window.Update();
-                    window.Focus();
-                }
-            }
+                    AddWindow(new LEM1802Window(d as LEM1802, CPU, true));
+                else if (d is GenericKeyboard)
+                    keyboardCount++;
+            
+            int remaining = keyboardCount - LEM1802Window.AssignedKeyboards.Count();
+            for(;remaining > 0; remaining--)
+                AddWindow(new GenerickeyboardWindow(null, CPU, true));
+            
             debugger.Focus();
             LastTick = DateTime.Now;
             timer = new System.Threading.Timer(FetchExecute, null, 10, Timeout.Infinite);
             Application.Run(debugger);
             timer.Dispose();
         }
-
+        
+        static void AddWindow(LEM1802Window window) {
+            window.StartPosition = FormStartPosition.Manual;
+            window.Location = screenLocation;
+            screenLocation.Y += window.Height + 12;
+            window.Show();
+            window.Invalidate();
+            window.Update();
+            window.Focus();
+            if(window.Keyboard != null) {
+                Windows.Add(window.Keyboard, window);
+            }
+            if(window.Screen != null) {
+                Windows.Add(window.Screen, window);
+            }
+        }
+        
         static void Application_ThreadException(object sender, ThreadExceptionEventArgs e)
         {
             CurrentDomain_UnhandledException(sender, new UnhandledExceptionEventArgs(e.Exception, false));

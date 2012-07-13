@@ -69,6 +69,6 @@
         #endregion
 
         private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
-        private System.Windows.Forms.ToolStripMenuItem takeScreenshotToolStripMenuItem;
+        protected System.Windows.Forms.ToolStripMenuItem takeScreenshotToolStripMenuItem;
     }
 }
