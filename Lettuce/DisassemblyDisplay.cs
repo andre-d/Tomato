@@ -51,7 +51,8 @@ namespace Lettuce
         {
             if (ClientRectangle.IntersectsWith(new Rectangle(e.Location, new Size(1, 1))))
             {
-                ((HandledMouseEventArgs)e).Handled = true;
+                if (!RuntimeInfo.IsMono)
+                    ((HandledMouseEventArgs)e).Handled = true;
                 if (e.Delta > 0)
                     SelectedAddress--;
                 else if (e.Delta < 0)
